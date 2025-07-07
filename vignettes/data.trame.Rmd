@@ -1,0 +1,21 @@
+---
+title: "A better 'data.frame' for 'SciViews::R'"
+author: "Philippe Grosjean"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{A better 'data.frame' for 'SciViews::R'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(data.trame)
+```
+
+TO DO...

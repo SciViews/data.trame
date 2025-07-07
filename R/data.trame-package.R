@@ -1,0 +1,18 @@
+#' A better 'data.frame' for 'SciViews::R'
+#'
+#' The 'data.trame' object is an hybrid between 'data.table', tibble' and
+#' 'data.frame'. It enhances the 'data.frame' with the speed of 'data.table' and
+#' the nice features of 'tibble' (petty printing, stricter rules...).
+#'
+#' @section Important functions:
+#'
+#' - [data.trame()] to construct a data.trame object,
+#'
+#' - [is.data.trame()] to test for data.trame objects.
+
+## usethis namespace: start
+#' @importFrom collapse copyAttrib
+#' @importFrom data.table copy key setalloccol setattr setkeyv
+#' @importFrom tibble as_tibble tibble
+## usethis namespace: end
+"_PACKAGE"
