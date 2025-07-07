@@ -37,7 +37,8 @@ data.trame <- function(..., .key = NULL, .rows = NULL,
 }
 
 #' @rdname data.trame
-#' @param .rownames The name of the column that holds the row names, if any.
+#' @param .rownames The name of the column that holds the row names of the
+#'   original object, if any.
 #' @export
 as.data.trame <- function(x, .key = NULL, .rows = NULL, .rownames = NULL,
   .name_repair = c("check_unique", "unique", "universal", "minimal"), ...)
