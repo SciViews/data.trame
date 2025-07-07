@@ -28,7 +28,7 @@
 data.trame <- function(..., .key = NULL, .rows = NULL,
     .name_repair = c("check_unique", "unique", "universal", "minimal")) {
   dtrm <- tibble(..., .rows = .rows, .name_repair = .name_repair)
-  #set_dtt(dtrm, keep.rownames = TRUE, key = .key)
+  #setDT(dtrm, keep.rownames = TRUE, key = .key)
   setalloccol(dtrm)
   setattr(dtrm, 'class', c('data.trame', 'data.table', 'data.frame'))
   if (!is.null(.key))
@@ -48,7 +48,7 @@ as.data.trame <- function(x, .key = NULL, .rows = NULL, .rownames = NULL,
 as.data.trame.default <- function(x, .key = NULL, .rows = NULL, .rownames = NULL,
   .name_repair = c("check_unique", "unique", "universal", "minimal"), ...) {
   dtrm <- as_tibble(x, .rows = .rows, .name_repair = .name_repair, rownames = .rownames, ...)
-  #set_dtt(dtrm, keep.rownames = TRUE, key = .key)
+  #setDT(dtrm, keep.rownames = TRUE, key = .key)
   setalloccol(dtrm)
   setattr(dtrm, 'class', c('data.trame', 'data.table', 'data.frame'))
   if (!is.null(.key))
