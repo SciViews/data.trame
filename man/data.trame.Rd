@@ -52,7 +52,8 @@ except for existence), or a function for custom name repair, e.g.,
 
 \item{x}{An object to test.}
 
-\item{.rownames}{The name of the column that holds the row names, if any.}
+\item{.rownames}{The name of the column that holds the row names of the
+original object, if any.}
 }
 \value{
 A 'data.trame' object, which is indeed a

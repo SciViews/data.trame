@@ -13,6 +13,8 @@
 ## usethis namespace: start
 #' @importFrom collapse copyAttrib
 #' @importFrom data.table copy key setalloccol setattr setkeyv
+#' @importFrom rlang f_lhs f_rhs
 #' @importFrom tibble as_tibble tibble
+#' @importFrom utils getS3method
 ## usethis namespace: end
 "_PACKAGE"
