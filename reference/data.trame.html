@@ -98,7 +98,7 @@
 <span>  <span class="va">x</span>,</span>
 <span>  .key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  .rownames <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rownames <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -108,7 +108,27 @@
 <span>  <span class="va">x</span>,</span>
 <span>  .key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  .rownames <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rownames <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'data.frame'</span></span>
+<span><span class="fu">as.data.trame</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  .key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rownames <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'data.table'</span></span>
+<span><span class="fu">as.data.trame</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  .key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rownames <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -144,12 +164,13 @@ except for existence), or a function for custom name repair, e.g.,
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An object to test.</p></dd>
+<dd><p>An object.</p></dd>
 
 
 <dt id="arg--rownames">.rownames<a class="anchor" aria-label="anchor" href="#arg--rownames"></a></dt>
 <dd><p>The name of the column that holds the row names of the
-original object, if any.</p></dd>
+original object, if any. If <code>NA</code> (default), row names are left intact. If
+<code>NULL</code> row names are removed.</p></dd>
 
 </dl></div>
     <div id="value">
