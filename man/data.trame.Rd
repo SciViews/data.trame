@@ -4,6 +4,8 @@
 \alias{data.trame}
 \alias{as.data.trame}
 \alias{as.data.trame.default}
+\alias{as.data.trame.data.frame}
+\alias{as.data.trame.data.table}
 \alias{is.data.trame}
 \title{Build, coerce and test for 'data.trame' objects}
 \usage{
@@ -18,7 +20,7 @@ as.data.trame(
   x,
   .key = NULL,
   .rows = NULL,
-  .rownames = NULL,
+  .rownames = NA,
   .name_repair = c("check_unique", "unique", "universal", "minimal"),
   ...
 )
@@ -27,7 +29,25 @@ as.data.trame(
   x,
   .key = NULL,
   .rows = NULL,
-  .rownames = NULL,
+  .rownames = NA,
+  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  ...
+)
+
+\method{as.data.trame}{data.frame}(
+  x,
+  .key = NULL,
+  .rows = NULL,
+  .rownames = NA,
+  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  ...
+)
+
+\method{as.data.trame}{data.table}(
+  x,
+  .key = NULL,
+  .rows = NULL,
+  .rownames = NA,
   .name_repair = c("check_unique", "unique", "universal", "minimal"),
   ...
 )
@@ -50,10 +70,11 @@ unique and syntactically correct), \code{"minimal"} (no check or name repair
 except for existence), or a function for custom name repair, e.g.,
 \code{.name.repair = make.names} for base R style.}
 
-\item{x}{An object to test.}
+\item{x}{An object.}
 
 \item{.rownames}{The name of the column that holds the row names of the
-original object, if any.}
+original object, if any. If \code{NA} (default), row names are left intact. If
+\code{NULL} row names are removed.}
 }
 \value{
 A 'data.trame' object, which is indeed a

@@ -13,8 +13,9 @@
 ## usethis namespace: start
 #' @importFrom collapse copyAttrib
 #' @importFrom data.table copy key setalloccol setattr setkeyv
-#' @importFrom rlang f_lhs f_rhs
-#' @importFrom tibble as_tibble tibble
-#' @importFrom utils getS3method
+#' @importFrom pillar tbl_nrow
+#' @importFrom rlang check_dots_empty0 f_lhs f_rhs
+#' @importFrom tibble as_tibble obj_sum size_sum tbl_sum tibble
+#' @importFrom utils getS3method str
 ## usethis namespace: end
 "_PACKAGE"

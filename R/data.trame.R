@@ -38,29 +38,69 @@ data.trame <- function(..., .key = NULL, .rows = NULL,
 
 #' @rdname data.trame
 #' @param .rownames The name of the column that holds the row names of the
-#'   original object, if any.
+#'   original object, if any. If `NA` (default), row names are left intact. If
+#'   `NULL` row names are removed.
 #' @export
-as.data.trame <- function(x, .key = NULL, .rows = NULL, .rownames = NULL,
-  .name_repair = c("check_unique", "unique", "universal", "minimal"), ...)
+as.data.trame <- function(x, .key = NULL, .rows = NULL, .rownames = NA,
+    .name_repair = c("check_unique", "unique", "universal", "minimal"), ...) {
   UseMethod("as.data.trame")
+}
 
 #' @rdname data.trame
 #' @export
-as.data.trame.default <- function(x, .key = NULL, .rows = NULL, .rownames = NULL,
-  .name_repair = c("check_unique", "unique", "universal", "minimal"), ...) {
-  dtrm <- as_tibble(x, .rows = .rows, .name_repair = .name_repair, rownames = .rownames, ...)
-  #setDT(dtrm, keep.rownames = TRUE, key = .key)
-  setattr(dtrm, 'class', c('data.trame', 'data.table', 'data.frame'))
-  setalloccol(dtrm)
+as.data.trame.default <- function(x, .key = NULL, .rows = NULL,
+    .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
+    "minimal"), ...) {
+  check_dots_empty0()
+  x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
+    rownames = .rownames)
+  #setDT(x, keep.rownames = TRUE, key = .key)
+  setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
+  setalloccol(x)
   if (!is.null(.key))
-    setkeyv(dtrm, .key)
-  dtrm
+    setkeyv(x, .key)
+  x
 }
-# TODO: optimized versions for as.data.trame.data.frame, as.data.trame.data.table & as.data.trame.tbl_df
-
-# TODO: as.tibble <- aka(as_tibble), as_tibble.data.trame, as.data.frame.data.trame, as.data.table.data.trame
 
 #' @rdname data.trame
-#' @param x An object to test.
+#' @export
+as.data.trame.data.frame <- function(x, .key = NULL, .rows = NULL,
+    .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
+    "minimal"), ...) {
+  check_dots_empty0()
+  if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair))
+    x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
+      rownames = .rownames)
+  setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
+  setalloccol(x)
+  if (!is.null(.key))
+    setkeyv(x, .key)
+  x
+}
+
+#' @rdname data.trame
+#' @export
+as.data.trame.data.table <- function(x, .key = NULL, .rows = NULL,
+    .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
+    "minimal"), ...) {
+  check_dots_empty0()
+  if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair)) {
+    x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
+      rownames = .rownames)
+    setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
+    setalloccol(x)
+  }
+  if (!is.null(.key))
+    setkeyv(x, .key)
+  x
+}
+
+#as.tibble <- svMisc::aka(tibble::as_tibble) # Should be nice to have
+#as_tibble.data.trame == as_tibble.data.frame
+#as.data.frame.data.trame == as.data.frame.data.table
+#as.data.table.data.trame == as.data.table.data.table
+
+#' @rdname data.trame
+#' @param x An object.
 #' @export
 is.data.trame <- function(x) inherits(x, 'data.trame')
