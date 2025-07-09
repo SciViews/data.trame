@@ -7,7 +7,7 @@
     roll = FALSE, rollends = if (roll == "nearest") c(TRUE, TRUE) else
     if (roll >= 0) c(FALSE, TRUE) else c(TRUE, FALSE), which = FALSE, .SDcols,
     verbose = getOption("datatable.verbose"),
-    allow.cartesian = getOption("datatable.allow.cartesian"), drop = NULL,
+    allow.cartesian = getOption("datatable.allow.cartesian"), drop = FALSE,
     on = NULL, env = NULL,
     showProgress = getOption("datatable.showProgress", interactive())) {
   UseMethod(".[")
@@ -125,7 +125,7 @@
         stop("the formula in i cannot have a left-hand side")
       i <- f_rhs(i)
     }
-    res <- do.call(`.[`, list(x, i, with = TRUE, drop = NULL, ...),
+    res <- do.call(`.[`, list(x, i, with = TRUE, drop = FALSE, ...),
       envir = parent.frame()) # with applies only on j
 
   } else {# j provided
@@ -133,12 +133,12 @@
       if (!missing(by) || !missing(keyby))
         stop("by and keyby can only be provided when j is a formula")
       if (missing(i)) {
-        res <- do.call(`.[`, list(x, j = j, with = FALSE, drop = NULL, ...),
+        res <- do.call(`.[`, list(x, j = j, with = FALSE, drop = FALSE, ...),
           envir = parent.frame())
       } else {# both i and j provided
         if (inherits(i, "formula"))
           stop("both i and j must be formulas simultaneously")
-        res <- do.call(`.[`, list(x, i, j, with = FALSE, drop = NULL, ...),
+        res <- do.call(`.[`, list(x, i, j, with = FALSE, drop = FALSE, ...),
             envir = parent.frame())
       }
 
@@ -160,7 +160,7 @@
         if (missing(keyby)) {
           if (missing(i)) {
             res <- do.call(`.[`, list(substitute(x), j = j, by = by,
-              with = with, drop = NULL, ...), envir = parent.frame())
+              with = with, drop = FALSE, ...), envir = parent.frame())
           } else {
             if (!inherits(i, "formula"))
               stop("both i and j must be formulas simultaneously")
@@ -168,14 +168,14 @@
               stop("the formula in i cannot have a left-hand side")
             i <- f_rhs(i)
             res <- do.call(`.[`, list(substitute(x), i, j, by,
-              with = with, drop = NULL, ...), envir = parent.frame())
+              with = with, drop = FALSE, ...), envir = parent.frame())
           }
         } else if (!is.logical(keyby)) {
           stop("keyby must be TRUE or FALSE when by is provided")
         } else {
           if (missing(i)) {
             res <- do.call(`.[`, list(substitute(x), j = j, by = by,
-              keyby = keyby, with = with, drop = NULL, ...),
+              keyby = keyby, with = with, drop = FALSE, ...),
               envir = parent.frame())
           } else {
             if (!inherits(i, "formula"))
@@ -184,7 +184,7 @@
               stop("the formula in i cannot have a left-hand side")
             i <- f_rhs(i)
             res <- do.call(`.[`, list(substitute(x), i, j, by, keyby,
-              with = with, drop = NULL, ...), envir = parent.frame())
+              with = with, drop = FALSE, ...), envir = parent.frame())
           }
         }
 
@@ -192,7 +192,7 @@
         if (missing(keyby)) {
           if (missing(i)) {
             res <- do.call(`.[`, list(substitute(x), j = j,
-              with = with, drop = NULL, ...), envir = parent.frame())
+              with = with, drop = FALSE, ...), envir = parent.frame())
           } else {
             if (inherits(i, "formula")) {
               if (!is.null(f_lhs(i)))
@@ -200,7 +200,7 @@
               i <- f_rhs(i)
             }
             res <- do.call(`.[`, list(substitute(x), i, j,
-              with = with, drop = NULL, ...), envir = parent.frame())
+              with = with, drop = FALSE, ...), envir = parent.frame())
           }
         } else {# keyby is present
           if (!inherits(keyby, "formula"))
@@ -210,7 +210,7 @@
           keyby <- f_rhs(keyby)
           if (missing(i)) {
             res <- do.call(`.[`, list(substitute(x), j = j, keyby = keyby,
-              with = with, drop = NULL, ...), envir = parent.frame())
+              with = with, drop = FALSE, ...), envir = parent.frame())
           } else {
             if (inherits(i, "formula")) {
               if (!is.null(f_lhs(i)))
@@ -218,7 +218,7 @@
               i <- f_rhs(i)
             }
             res <- do.call(`.[`, list(substitute(x), i, j, keyby = keyby,
-              with = with, drop = NULL, ...), envir = parent.frame())
+              with = with, drop = FALSE, ...), envir = parent.frame())
           }
         }
       }
