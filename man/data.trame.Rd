@@ -6,6 +6,7 @@
 \alias{as.data.trame.default}
 \alias{as.data.trame.data.frame}
 \alias{as.data.trame.data.table}
+\alias{as.data.trame.data.trame}
 \alias{is.data.trame}
 \title{Build, coerce and test for 'data.trame' objects}
 \usage{
@@ -44,6 +45,15 @@ as.data.trame(
 )
 
 \method{as.data.trame}{data.table}(
+  x,
+  .key = NULL,
+  .rows = NULL,
+  .rownames = NA,
+  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  ...
+)
+
+\method{as.data.trame}{data.trame}(
   x,
   .key = NULL,
   .rows = NULL,

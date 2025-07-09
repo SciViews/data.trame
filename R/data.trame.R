@@ -87,6 +87,23 @@ as.data.trame.data.table <- function(x, .key = NULL, .rows = NULL,
   if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair)) {
     x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
       rownames = .rownames)
+  }
+  setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
+  setalloccol(x)
+  if (!is.null(.key))
+    setkeyv(x, .key)
+  x
+}
+
+#' @rdname data.trame
+#' @export
+as.data.trame.data.trame <- function(x, .key = NULL, .rows = NULL,
+  .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
+    "minimal"), ...) {
+  check_dots_empty0()
+  if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair)) {
+    x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
+      rownames = .rownames)
     setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
     setalloccol(x)
   }
