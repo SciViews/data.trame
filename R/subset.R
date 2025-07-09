@@ -42,6 +42,10 @@
   res
 }
 
+# TODO: also deal with optimisation using set() for `:=`(x = expr1, y = expr2)
+# form that should be written ~.(x = expr1, y = expr2)
+# There is also the let() form -> ~let(x = expr1, y = expr2) may be?
+#
 #' Subsetting data.trames
 #'
 #' Subsetting data.trames uses a syntax similar to tibble, or formulas for `i`,
@@ -108,9 +112,16 @@
 #' dtrm  # Changed in place (by reference!)
 #' # Another form that does not need braces, but is less readable:
 #' dtrm[, ~`:=`(e, paste0(b, a))]
+#' # or equivalently:
+#' dtrm[, ~let(e = paste0(b, a))]
 #' dtrm
-#' # In this case, it is much better to just replace `:=` by `~`:
+#' # In this case, it is much better to just replace `:=` by `~`, but internally
+#' # it uses set(). It is faster, but much more limited and cannot use by or
+#' # or keyby:
 #' dtrm[, f ~ paste0(c, a)]
+#' dtrm
+#' # One can also use standard evaluation in that case using with = FALSE
+#' dtrm[, f ~ paste0(dtrm$c, dtrm$a), with = FALSE]
 #' dtrm
 `[.data.trame` <- function(x, i, j, by, keyby, with = TRUE, drop = FALSE, ...) {
 
@@ -145,9 +156,46 @@
     } else {# j is a formula, use the data.table syntax
       # In case we have x ~ expr, we transform into x := expr
       j_lhs <- f_lhs(j)
-      if (!is.null(j_lhs)) {
-        j[[1]] <- as.name(":=")
-        attributes(j) <- NULL # Eliminate class and .Environment -> call object
+      if (!is.null(j_lhs)) {# We use the faster set() instead of [.data.table
+        if (!missing(by) || !missing(keyby))
+          stop("by and keyby cannot be provided when j is a formula with a lhs")
+        if (missing(i)) {
+          i <- NULL # Equivalent
+        } else if (inherits(i, "formula")) {
+          i <- f_rhs(i)
+        }
+        # Since set() uses standard evaluation, but we are in a formula, we want
+        # NSE, with the variables of x available, so... wrap the expr in with()
+        # but not if the user explicitly specifies with = FALSE
+        if (!missing(with) && isFALSE(with)) {# No with construct
+          expr <- f_rhs(j)
+        } else{# Wrap the expression inside a with() construct
+          expr <- quote(with(df, j_rhs))
+          expr[[2]] <- substitute(x)
+          expr[[3]] <- f_rhs(j)
+        }
+        # j can be x, "x", 1, or c(x, y), c("x", "y"), c(1, 3)
+        # deal with all these forms:
+        # x -> class is "name", need to apply as.character()
+        # "x" -> class is "character" -> no need to change it
+        # 1 -> class is "numeric" -> no need to change it
+        # c(x, y) -> class is "call" -> check function is "c", eliminate first
+        # item, convert to character vector, and then to numeric if needed
+        if (is.numeric(j_lhs)) {
+          j <- as.integer(j_lhs)
+        } else if (is.name(j_lhs) || is.character(j_lhs)) {
+          j <- as.character(j_lhs)
+        } else if (is.call(j_lhs) && as.character(j_lhs[[1]]) == "c") {
+          j <- as.character(j_lhs[-1]) # Eliminate first item
+          if (is.numeric(j_lhs[[2]])) # Possibly convert to integer
+            j <- as.integer(j)
+        } else {
+          stop("j lhs must be like x, \"x\", 1, c(x, y), c(\"x\", \"y\") or c(1, 3)")
+        }
+        return(do.call(set, list(substitute(x), i = i, j = j, value = expr)))
+        # Note: these two line do the job without relying to set()!
+        #j[[1]] <- as.name(":=")
+        #attributes(j) <- NULL # Eliminate class and .Environment -> call object
       } else {
         j <- f_rhs(j)
       }

@@ -79,8 +79,15 @@ dtrm[, ~{d := paste0(b, c)}]
 dtrm  # Changed in place (by reference!)
 # Another form that does not need braces, but is less readable:
 dtrm[, ~`:=`(e, paste0(b, a))]
+# or equivalently:
+dtrm[, ~let(e = paste0(b, a))]
 dtrm
-# In this case, it is much better to just replace `:=` by `~`:
+# In this case, it is much better to just replace `:=` by `~`, but internally
+# it uses set(). It is faster, but much more limited and cannot use by or
+# or keyby:
 dtrm[, f ~ paste0(c, a)]
+dtrm
+# One can also use standard evaluation in that case using with = FALSE
+dtrm[, f ~ paste0(dtrm$c, dtrm$a), with = FALSE]
 dtrm
 }
