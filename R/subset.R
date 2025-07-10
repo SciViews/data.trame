@@ -33,7 +33,7 @@
   if (missing(i)) {
     res <- x[, j, drop = drop]
   } else if (missing(j)) {
-    res <- x[i, ]
+    res <- x[i] # It selects on columns, while data.table selects on rows
   } else {
     res <- x[i, j, drop = drop]
   }
@@ -72,6 +72,7 @@
 #' @returns A data.trame object, or a vector if `drop = TRUE` and the result has
 #'   only one column.
 #' @export
+#' @name subsetting
 #'
 #' @examples
 #' dtrm <- data.trame(
@@ -123,6 +124,19 @@
 #' # One can also use standard evaluation in that case using with = FALSE
 #' dtrm[, f ~ paste0(dtrm$c, dtrm$a), with = FALSE]
 #' dtrm
+#' #
+#' # Take care when you provide only one argument:
+#' # If it is a formula, the data.table syntax is used (select rows)
+#' # otherwise, the data.frame syntax applies, and columns are selected!
+#' dtrm[1:2] # All rows and 2 first columns
+#' dtrm[~1:2] # All columns and 2 first rows!
+#'
+#' # For $, on the contrary to data.frame/data.table, but like tibble,
+#' # no partial match is allowed (returns NULL with a warning)
+#' dtrm$count <- dtrm$c
+#' names(dtrm)
+#' dtrm$count #OK
+#' #dtrm$co # Not OK, no partial match allowed
 `[.data.trame` <- function(x, i, j, by, keyby, with = TRUE, drop = FALSE, ...) {
 
   if (missing(j)) {
@@ -135,17 +149,20 @@
       if (!is.null(f_lhs(i)))
         stop("the formula in i cannot have a left-hand side")
       i <- f_rhs(i)
+      res <- do.call(`.[`, list(x, i, drop = drop, ...),
+        envir = parent.frame()) # with applies only on j
+    } else {# i is not a formula, use the data.frame syntax: columns selection
+      res <- do.call(`.[.data.frame`, list(x, i, drop = drop),
+        envir = parent.frame())
     }
-    res <- do.call(`.[`, list(x, i, with = TRUE, drop = FALSE, ...),
-      envir = parent.frame()) # with applies only on j
 
   } else {# j provided
     if (!inherits(j, "formula")) {# SE syntax
       if (!missing(by) || !missing(keyby))
         stop("by and keyby can only be provided when j is a formula")
       if (missing(i)) {
-        res <- do.call(`.[`, list(x, j = j, with = FALSE, drop = FALSE, ...),
-          envir = parent.frame())
+        res <- do.call(`.[`, list(x, j = j, with = FALSE,
+          drop = FALSE, ...), envir = parent.frame())
       } else {# both i and j provided
         if (inherits(i, "formula"))
           stop("both i and j must be formulas simultaneously")
@@ -192,7 +209,8 @@
         } else {
           stop("j lhs must be like x, \"x\", 1, c(x, y), c(\"x\", \"y\") or c(1, 3)")
         }
-        return(do.call(set, list(substitute(x), i = i, j = j, value = expr)))
+        return(do.call(set, list(substitute(x), i = i, j = j, value = expr),
+          envir = parent.frame()))
         # Note: these two line do the job without relying to set()!
         #j[[1]] <- as.name(":=")
         #attributes(j) <- NULL # Eliminate class and .Environment -> call object
@@ -278,4 +296,14 @@
   } else {
     res
   }
+}
+
+#' @rdname subsetting
+#' @param name The name of the column to extract.
+#' @export
+`$.data.trame` <- function(x, name) {
+  out <- .subset2(x, name)
+  if (is.null(out))
+    warning("Unknown or uninitialised column: ", name, ".")
+  out
 }
