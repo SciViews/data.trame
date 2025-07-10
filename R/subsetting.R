@@ -184,12 +184,14 @@
         # Since set() uses standard evaluation, but we are in a formula, we want
         # NSE, with the variables of x available, so... wrap the expr in with()
         # but not if the user explicitly specifies with = FALSE
-        if (!missing(with) && isFALSE(with)) {# No with construct
-          expr <- f_rhs(j)
+        j_rhs <- f_rhs(j)
+        if ((!missing(with) && isFALSE(with)) ||
+            is.null(j_rhs)) {# No with construct
+          expr <- j_rhs
         } else{# Wrap the expression inside a with() construct
           expr <- quote(with(df, j_rhs))
           expr[[2]] <- substitute(x)
-          expr[[3]] <- f_rhs(j)
+          expr[[3]] <- j_rhs
         }
         # j can be x, "x", 1, or c(x, y), c("x", "y"), c(1, 3)
         # deal with all these forms:
