@@ -12,7 +12,7 @@
 
 ## usethis namespace: start
 #' @importFrom collapse copyAttrib
-#' @importFrom data.table copy key set setalloccol setattr setkeyv
+#' @importFrom data.table copy is.data.table key set setalloccol setattr setkeyv
 #' @importFrom pillar tbl_nrow
 #' @importFrom rlang check_dots_empty0 f_lhs f_rhs
 #' @importFrom tibble as_tibble obj_sum size_sum tbl_sum tibble
