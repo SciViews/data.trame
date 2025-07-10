@@ -25,7 +25,7 @@
 #' str(dtrm)
 print.data.trame <- function(x, width = NULL, ..., n = NULL,
   max_extra_cols = NULL, max_footer_lines = NULL) {
-  y <- as_tibble(x)
+  y <- as_tibble(x, .name_repair = "minimal")
   class(y) <- unique(c("datatrame", class(y)))
   print(y, width = width, ..., n = n, max_extra_cols = max_extra_cols,
     max_footer_lines = max_footer_lines)
@@ -44,7 +44,7 @@ format.data.trame <- function(x, width = NULL, ..., n = NULL,
 
 #' @rdname print.data.trame
 #' @export
-obj_sum.data.trame <- obj_sum.datatrame <- function(x) {
+obj_sum.datatrame <- function(x) {
   abbr <- "dtrm"
   out <- paste(abbr, size_sum(x))
   structure(out, short = abbr)
@@ -52,14 +52,18 @@ obj_sum.data.trame <- obj_sum.datatrame <- function(x) {
 
 #' @rdname print.data.trame
 #' @export
-tbl_sum.data.trame <- tbl_sum.datatrame <- function(x, ...) {
+obj_sum.data.trame <- obj_sum.datatrame
+
+#' @rdname print.data.trame
+#' @export
+tbl_sum.datatrame <- function(x, ...) {
   res <-  c(`A data.trame` = size_sum(x))
 
   key <- key(x)
   if (!is.null(key)) {
     res <- c(res, Key = paste(key, collapse = ", "))
-  } else {
-    message("key is NULL")
+  #} else {
+  #  message("key is NULL")
   }
 
   lang <- attr(comment(x), "lang")
@@ -68,6 +72,10 @@ tbl_sum.data.trame <- tbl_sum.datatrame <- function(x, ...) {
 
   res
 }
+
+#' @rdname print.data.trame
+#' @export
+tbl_sum.data.trame <- tbl_sum.datatrame
 
 #' @rdname print.data.trame
 #' @export

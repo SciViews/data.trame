@@ -3,7 +3,9 @@
 \name{print.data.trame}
 \alias{print.data.trame}
 \alias{format.data.trame}
+\alias{obj_sum.datatrame}
 \alias{obj_sum.data.trame}
+\alias{tbl_sum.datatrame}
 \alias{tbl_sum.data.trame}
 \alias{tbl_nrow.data.trame}
 \alias{str.data.trame}
@@ -27,7 +29,11 @@
   max_footer_lines = NULL
 )
 
+\method{obj_sum}{datatrame}(x)
+
 \method{obj_sum}{data.trame}(x)
+
+\method{tbl_sum}{datatrame}(x, ...)
 
 \method{tbl_sum}{data.trame}(x, ...)
 
