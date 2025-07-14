@@ -93,7 +93,11 @@ j, and possibly by or keyby to use the data.table syntax instead."><meta propert
 <span><span class="va">x</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span>, <span class="va">by</span>, <span class="va">keyby</span>, with <span class="op">=</span> <span class="cn">TRUE</span>, drop <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'data.trame'</span></span>
-<span><span class="va">x</span><span class="op">$</span><span class="va">name</span></span></code></pre></div>
+<span><span class="va">x</span><span class="op">$</span><span class="va">name</span></span>
+<span></span>
+<span><span class="fu">set_</span><span class="op">(</span><span class="va">x</span>, <span class="va">i</span>, <span class="va">j</span>, <span class="va">value</span>, byref <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">let_</span><span class="op">(</span><span class="va">x</span>, i <span class="op">=</span> <span class="cn">NULL</span>, j <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="va">value</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -144,6 +148,14 @@ formulas.</p></dd>
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
 <dd><p>The name of the column to extract.</p></dd>
 
+
+<dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
+<dd><p>The value to insert as subassignment in a data.trame object.</p></dd>
+
+
+<dt id="arg-byref">byref<a class="anchor" aria-label="anchor" href="#arg-byref"></a></dt>
+<dd><p>Logical, whether to use by reference or not (<code>FALSE</code> by default).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -160,27 +172,25 @@ only one column.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Subsetting rows, the tibble-way</span></span></span>
 <span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 2]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       a b    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 a    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 b    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 c    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [2 × 3]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 a     A    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 b     B    </span>
 <span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>, <span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 2]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   b     c    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a     A    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b     B    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c     C    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [2 × 3]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     2 b     B    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     3 c     C    </span>
 <span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, <span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 2]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       a c    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 A    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 B    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 C    </span>
-<span class="r-in"><span><span class="co"># On the contrary to tibble, providing only one arg, means subsetting rows too</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [2 × 3]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 a     A    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     3 c     C    </span>
+<span class="r-in"><span><span class="co"># On the contrary to data.table, providing only one arg, means subsetting</span></span></span>
+<span class="r-in"><span><span class="co"># columns (like for data.frame or tibble)</span></span></span>
 <span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 2]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       a c    </span>
@@ -189,12 +199,11 @@ only one column.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 B    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 C    </span>
 <span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span><span class="va">dtrm</span><span class="op">$</span><span class="va">a</span> <span class="op">&gt;</span> <span class="fl">1</span>, <span class="op">]</span> <span class="co"># Must fully qualify the column name</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 2]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   b     c    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a     A    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b     B    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> c     C    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [2 × 3]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     2 b     B    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     3 c     C    </span>
 <span class="r-in"><span><span class="co"># Subsetting the data.table way, with formulas: no fully qualification needed</span></span></span>
 <span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span><span class="op">~</span><span class="va">a</span> <span class="op">&gt;</span> <span class="fl">1</span>, <span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [2 × 3]</span></span>
@@ -253,11 +262,10 @@ only one column.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> C     c    </span>
 <span class="r-in"><span><span class="co"># Subsetting the columns, the data.table way, with formulas</span></span></span>
 <span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span><span class="op">~</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">~</span><span class="fu">.</span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [2 × 1]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   b    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> a    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> b    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         b</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;char&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:      b</span>
 <span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span><span class="op">~</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">~</span><span class="va">b</span><span class="op">]</span> <span class="co"># If not enclosed in .(), returns a vector instead</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "a" "b"</span>
 <span class="r-in"><span><span class="co"># Precautions are needed here because it is NOT referentially transparent:</span></span></span>
@@ -271,14 +279,7 @@ only one column.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Extended data.table syntax using i, j, by, or keyby with formulas</span></span></span>
 <span class="r-in"><span><span class="co"># Warning: due to precedence of operators, you must use braces here!</span></span></span>
-<span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span>, <span class="op">~</span><span class="op">{</span><span class="va">d</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">b</span>, <span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 4]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c     d    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 a     A     aA   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 b     B     bB   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 c     C     cC   </span>
-<span class="r-in"><span><span class="va">dtrm</span>  <span class="co"># Changed in place (by reference!)</span></span></span>
+<span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span>, <span class="op">~</span><span class="op">{</span><span class="va">d</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">b</span>, <span class="va">c</span><span class="op">)</span><span class="op">}</span><span class="op">]</span> <span class="co"># Changed in place (by reference!)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 4]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c     d    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
@@ -301,13 +302,6 @@ only one column.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 a     A     aA    a1   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 b     B     bB    b2   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 c     C     cC    c3   </span>
-<span class="r-in"><span><span class="va">dtrm</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 5]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c     d     e    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 a     A     aA    a1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 b     B     bB    b2   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 c     C     cC    c3   </span>
 <span class="r-in"><span><span class="co"># In this case, it is much better to just replace `:=` by `~`, but internally</span></span></span>
 <span class="r-in"><span><span class="co"># it uses set(). It is faster, but much more limited and cannot use by or</span></span></span>
 <span class="r-in"><span><span class="co"># or keyby:</span></span></span>
@@ -318,22 +312,8 @@ only one column.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 a     A     aA    a1    A1   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 b     B     bB    b2    B2   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 c     C     cC    c3    C3   </span>
-<span class="r-in"><span><span class="va">dtrm</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 6]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c     d     e     f    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 a     A     aA    a1    A1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 b     B     bB    b2    B2   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 c     C     cC    c3    C3   </span>
 <span class="r-in"><span><span class="co"># One can also use standard evaluation in that case using with = FALSE</span></span></span>
 <span class="r-in"><span><span class="va">dtrm</span><span class="op">[</span>, <span class="va">f</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dtrm</span><span class="op">$</span><span class="va">c</span>, <span class="va">dtrm</span><span class="op">$</span><span class="va">a</span><span class="op">)</span>, with <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 6]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c     d     e     f    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 a     A     aA    a1    A1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 b     B     bB    b2    B2   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 c     C     cC    c3    C3   </span>
-<span class="r-in"><span><span class="va">dtrm</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [3 × 6]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       a b     c     d     e     f    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>

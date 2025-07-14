@@ -113,6 +113,16 @@
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'list'</span></span>
+<span><span class="fu">as.data.trame</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  .key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rownames <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'data.frame'</span></span>
 <span><span class="fu">as.data.trame</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
@@ -186,8 +196,8 @@ original object, if any. If <code>NA</code> (default), row names are left intact
     <div id="value">
     <h2>Value</h2>
     <p>A 'data.trame' object, which is indeed a
-'data.trame'/'data.table'/'data.frame' object, thus subclassing both
-'data.table' and 'data.frame'. <code>is.data.trame()</code> returns <code>TRUE</code> if the
+'data.trame'/'data.frame' object, thus subclassing 'data.frame'.
+<code>is.data.trame()</code> returns <code>TRUE</code> if the
 object is a 'data.trame', and <code>FALSE</code> otherwise.</p>
     </div>
 

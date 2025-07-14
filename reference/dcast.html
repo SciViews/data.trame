@@ -182,23 +182,8 @@ variable names (<code>_</code> by default).</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Adapted from first example of ?dcast.data.table</span></span></span>
 <span class="r-in"><span><span class="va">ChickWeight</span> <span class="op">=</span> <span class="fu"><a href="data.trame.html">as.data.trame</a></span><span class="op">(</span><span class="va">ChickWeight</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ChickWeight</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">tolower</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ChickWeight</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">dtrm</span> <span class="op">&lt;-</span> <span class="fu"><a href="melt.html">melt</a></span><span class="op">(</span><span class="fu"><a href="data.trame.html">as.data.trame</a></span><span class="op">(</span><span class="va">ChickWeight</span><span class="op">)</span>, id.vars <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">dcast</span><span class="op">(</span><span class="va">dtrm</span>, <span class="va">time</span> <span class="op">~</span> <span class="va">variable</span>, fun.aggregate <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data.trame: [12 × 2]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     time weight</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     0   41.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2   49.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     4   60.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     6   74.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     8   91.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    10  108. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    12  129. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    14  144. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    16  168. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    18  190. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>    20  210. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>    21  219. </span>
+<span class="r-in"><span><span class="va">dtrm</span> <span class="op">&lt;-</span> <span class="fu"><a href="melt.html">melt</a></span><span class="op">(</span><span class="va">ChickWeight</span>, id.vars <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#dcast(dtrm, time ~ variable, fun.aggregate = mean)</span></span></span>
 </code></pre></div>
     </div>
   </div>
