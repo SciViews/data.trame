@@ -1,51 +1,6 @@
 # Subsetting is done in SE way, except if formulas are provided, then, it is the
 # data.table syntax that is used with the rhs expression in the formulas
 
-#' @noRd
-#' @export
-`.[` <- function(x, i, j, by, keyby, with = TRUE, nomatch = NA, mult = "all",
-    roll = FALSE, rollends = if (roll == "nearest") c(TRUE, TRUE) else
-    if (roll >= 0) c(FALSE, TRUE) else c(TRUE, FALSE), which = FALSE, .SDcols,
-    verbose = getOption("datatable.verbose"),
-    allow.cartesian = getOption("datatable.allow.cartesian"), drop = FALSE,
-    on = NULL, env = NULL,
-    showProgress = getOption("datatable.showProgress", interactive())) {
-  UseMethod(".[")
-}
-
-#' @noRd
-#' @export
-`.[.data.table` <- getS3method("[", "data.table")
-
-#' @noRd
-#' @export
-`.[.data.frame` <- function(x, i, j, by, keyby, with = TRUE, nomatch = NA,
-    mult = "all", roll = FALSE, rollends = if (roll == "nearest") c(TRUE, TRUE)
-    else if (roll >= 0) c(FALSE, TRUE) else c(TRUE, FALSE), which = FALSE,
-    .SDcols, verbose = getOption("datatable.verbose"),
-    allow.cartesian = getOption("datatable.allow.cartesian"),
-    drop = if (missing(i)) TRUE else ncol(x) == 1, on = NULL, env = NULL,
-    showProgress = getOption("datatable.showProgress", interactive())) {
-  if (missing(i) && missing(j))
-    return(x) # No subsetting, return the object as is
-  xclass <- class(x)
-  x <- as.data.frame(x)
-  if (missing(i)) {
-    res <- x[, j, drop = drop]
-  } else if (missing(j)) {
-    res <- x[i] # It selects on columns, while data.table selects on rows
-  } else {
-    res <- x[i, j, drop = drop]
-  }
-  if (is.data.frame(res))
-    res <- as.data.trame(res)
-  res
-}
-
-# TODO: also deal with optimisation using set() for `:=`(x = expr1, y = expr2)
-# form that should be written ~.(x = expr1, y = expr2)
-# There is also the let() form -> ~let(x = expr1, y = expr2) may be?
-#
 #' Subsetting data.trames
 #'
 #' Subsetting data.trames uses a syntax similar to tibble, or formulas for `i`,
@@ -84,7 +39,8 @@
 #' dtrm[1:2, ]
 #' dtrm[-1, ]
 #' dtrm[c(TRUE, FALSE, TRUE), ]
-#' # On the contrary to tibble, providing only one arg, means subsetting rows too
+#' # On the contrary to data.table, providing only one arg, means subsetting
+#' # columns (like for data.frame or tibble)
 #' dtrm[c(TRUE, FALSE, TRUE)]
 #' dtrm[dtrm$a > 1, ] # Must fully qualify the column name
 #' # Subsetting the data.table way, with formulas: no fully qualification needed
@@ -109,21 +65,17 @@
 #'
 #' # Extended data.table syntax using i, j, by, or keyby with formulas
 #' # Warning: due to precedence of operators, you must use braces here!
-#' dtrm[, ~{d := paste0(b, c)}]
-#' dtrm  # Changed in place (by reference!)
+#' dtrm[, ~{d := paste0(b, c)}] # Changed in place (by reference!)
 #' # Another form that does not need braces, but is less readable:
 #' dtrm[, ~`:=`(e, paste0(b, a))]
 #' # or equivalently:
 #' dtrm[, ~let(e = paste0(b, a))]
-#' dtrm
 #' # In this case, it is much better to just replace `:=` by `~`, but internally
 #' # it uses set(). It is faster, but much more limited and cannot use by or
 #' # or keyby:
 #' dtrm[, f ~ paste0(c, a)]
-#' dtrm
 #' # One can also use standard evaluation in that case using with = FALSE
 #' dtrm[, f ~ paste0(dtrm$c, dtrm$a), with = FALSE]
-#' dtrm
 #' #
 #' # Take care when you provide only one argument:
 #' # If it is a formula, the data.table syntax is used (select rows)
@@ -138,22 +90,29 @@
 #' dtrm$count #OK
 #' #dtrm$co # Not OK, no partial match allowed
 `[.data.trame` <- function(x, i, j, by, keyby, with = TRUE, drop = FALSE, ...) {
+  let_data.trame_to_data.table(x)
+  on.exit(let_data.table_to_data.trame(x))
 
   if (missing(j)) {
     # by/keyby can only be provided when j is a formula
     if (!missing(by) || !missing(keyby))
       stop("by and keyby can only be provided when j is a formula")
     if (missing(i)) # Both i and j missing: just return x
-      return(x)
+       return(x)
     if (inherits(i, "formula")) {
       if (!is.null(f_lhs(i)))
         stop("the formula in i cannot have a left-hand side")
       i <- f_rhs(i)
-      res <- do.call(`.[`, list(x, i, drop = drop, ...),
+      res <- do.call(`.[.data.table`, list(x, i, drop = drop, ...),
         envir = parent.frame()) # with applies only on j
-    } else {# i is not a formula, use the data.frame syntax: columns selection
-      res <- do.call(`.[.data.frame`, list(x, i, drop = drop),
-        envir = parent.frame())
+    } else {# i is not a formula, use the data.frame syntax:
+      # columns selection if not empty j, or row selection
+      ij_args <- nargs() - ...length() - !missing(drop) - !missing(with) - 1L
+      if (ij_args > 1) {# Row selection
+        res <- `.[.data.frame`(x, i, drop = drop)
+      } else {# Column selection (like for data.frame)
+        res <- `.[.data.frame`(x, j = i, drop = drop)
+      }
     }
 
   } else {# j provided
@@ -161,19 +120,17 @@
       if (!missing(by) || !missing(keyby))
         stop("by and keyby can only be provided when j is a formula")
       if (missing(i)) {
-        res <- do.call(`.[`, list(x, j = j, with = FALSE,
-          drop = FALSE, ...), envir = parent.frame())
+        res <- `.[.data.frame`(x, j = j, drop = drop)
       } else {# both i and j provided
         if (inherits(i, "formula"))
           stop("both i and j must be formulas simultaneously")
-        res <- do.call(`.[`, list(x, i, j, with = FALSE, drop = FALSE, ...),
-            envir = parent.frame())
+        res <- `.[.data.frame`(x, i, j, drop = drop)
       }
 
     } else {# j is a formula, use the data.table syntax
       # In case we have x ~ expr, we transform into x := expr
       j_lhs <- f_lhs(j)
-      if (!is.null(j_lhs)) {# We use the faster set() instead of [.data.table
+      if (!is.null(j_lhs)) {# We use the faster let_() instead of [.data.table
         if (!missing(by) || !missing(keyby))
           stop("by and keyby cannot be provided when j is a formula with a lhs")
         if (missing(i)) {
@@ -181,7 +138,7 @@
         } else if (inherits(i, "formula")) {
           i <- f_rhs(i)
         }
-        # Since set() uses standard evaluation, but we are in a formula, we want
+        # Since let_() uses standard evaluation, but we are in a formula, we want
         # NSE, with the variables of x available, so... wrap the expr in with()
         # but not if the user explicitly specifies with = FALSE
         j_rhs <- f_rhs(j)
@@ -211,9 +168,9 @@
         } else {
           stop("j lhs must be like x, \"x\", 1, c(x, y), c(\"x\", \"y\") or c(1, 3)")
         }
-        return(do.call(set, list(substitute(x), i = i, j = j, value = expr),
+        return(do.call(let_, list(substitute(x), i = i, j = j, value = expr),
           envir = parent.frame()))
-        # Note: these two line do the job without relying to set()!
+        # Note: these two line do the job without relying to let_()!
         #j[[1]] <- as.name(":=")
         #attributes(j) <- NULL # Eliminate class and .Environment -> call object
       } else {
@@ -227,7 +184,7 @@
         by <- f_rhs(by)
         if (missing(keyby)) {
           if (missing(i)) {
-            res <- do.call(`.[`, list(substitute(x), j = j, by = by,
+            res <- do.call(`.[.data.table`, list(substitute(x), j = j, by = by,
               with = with, drop = FALSE, ...), envir = parent.frame())
           } else {
             if (!inherits(i, "formula"))
@@ -235,14 +192,14 @@
             if (!is.null(f_lhs(i)))
               stop("the formula in i cannot have a left-hand side")
             i <- f_rhs(i)
-            res <- do.call(`.[`, list(substitute(x), i, j, by,
+            res <- do.call(`.[.data.table`, list(substitute(x), i, j, by,
               with = with, drop = FALSE, ...), envir = parent.frame())
           }
         } else if (!is.logical(keyby)) {
           stop("keyby must be TRUE or FALSE when by is provided")
         } else {
           if (missing(i)) {
-            res <- do.call(`.[`, list(substitute(x), j = j, by = by,
+            res <- do.call(`.[.data.table`, list(substitute(x), j = j, by = by,
               keyby = keyby, with = with, drop = FALSE, ...),
               envir = parent.frame())
           } else {
@@ -251,7 +208,7 @@
             if (!is.null(f_lhs(i)))
               stop("the formula in i cannot have a left-hand side")
             i <- f_rhs(i)
-            res <- do.call(`.[`, list(substitute(x), i, j, by, keyby,
+            res <- do.call(`.[.data.table`, list(substitute(x), i, j, by, keyby,
               with = with, drop = FALSE, ...), envir = parent.frame())
           }
         }
@@ -259,7 +216,7 @@
       } else {# by is missing
         if (missing(keyby)) {
           if (missing(i)) {
-            res <- do.call(`.[`, list(substitute(x), j = j,
+            res <- do.call(`.[.data.table`, list(substitute(x), j = j,
               with = with, drop = FALSE, ...), envir = parent.frame())
           } else {
             if (inherits(i, "formula")) {
@@ -267,7 +224,7 @@
                 stop("the formula in i cannot have a left-hand side")
               i <- f_rhs(i)
             }
-            res <- do.call(`.[`, list(substitute(x), i, j,
+            res <- do.call(`.[.data.table`, list(substitute(x), i, j,
               with = with, drop = FALSE, ...), envir = parent.frame())
           }
         } else {# keyby is present
@@ -277,16 +234,18 @@
             stop("the formula in keyby cannot have a left-hand side")
           keyby <- f_rhs(keyby)
           if (missing(i)) {
-            res <- do.call(`.[`, list(substitute(x), j = j, keyby = keyby,
-              with = with, drop = FALSE, ...), envir = parent.frame())
+            res <- do.call(`.[.data.table`, list(substitute(x), j = j,
+              keyby = keyby, with = with, drop = FALSE, ...),
+              envir = parent.frame())
           } else {
             if (inherits(i, "formula")) {
               if (!is.null(f_lhs(i)))
                 stop("the formula in i cannot have a left-hand side")
               i <- f_rhs(i)
             }
-            res <- do.call(`.[`, list(substitute(x), i, j, keyby = keyby,
-              with = with, drop = FALSE, ...), envir = parent.frame())
+            res <- do.call(`.[.data.table`, list(substitute(x), i, j,
+              keyby = keyby, with = with, drop = FALSE, ...),
+              envir = parent.frame())
           }
         }
       }
@@ -308,4 +267,129 @@
   if (is.null(out))
     warning("Unknown or uninitialised column: ", name, ".")
   out
+}
+
+# TODO: should we be strict: only 1 or nrow(x) len for i?
+# TODO: should we rebuild key (and eliminate if if column removed)? To be tested!
+#' @rdname subsetting
+#' @param byref Logical, whether to use by reference or not (`FALSE` by default).
+#' @param value The value to insert as subassignment in a data.trame object.
+#' @export
+set_ <- function(x, i, j, value, byref = FALSE) {
+  if (missing(i))
+    i <- NULL
+
+  if (isTRUE(byref)) {
+    i <- switch(class(i)[1],
+      matrix = {
+        if (!missing(j))
+          stop("When i is a matrix in dtrm[i] <- value syntax, it doesn't make sense to provide j")
+        x = `[<-.data.frame`(x, i, value = value)
+        return(setalloccol(x))
+      },
+      logical = seq_row(x)[i],
+      numeric = as.integer(i),
+      character = structure(seq_row(x), names = rownames(x))[i],
+      i)
+
+    # j can be column names (character) or numbers (integer)
+    if (missing(j)) {# j cannot be missing in set()
+      j <- seq_along(x) # Faster than collapse::seq_row()
+    } else if (is.double(j)) {
+      j <- as.integer(j)
+    }
+
+    force(value)
+
+    # No need to switch, since set accepts also data.frame, except if new columns are created,
+    # but it takes too long to test => switch all the time
+    let_data.trame_to_data.table(x)
+    on.exit(let_data.table_to_data.trame(x))
+    do.call(set, list(substitute(x), i = i, j = j,
+      value = value), envir = parent.frame())
+
+  } else {# byref = FALSE
+    NextMethod("[<-", x) # Use the data.frame method instead
+  }
+}
+
+#' @rdname subsetting
+#' @export
+let_ <- function(x, i = NULL, j = seq_along(x), value) {
+  i <- switch(class(i)[1],
+    matrix = {
+      if (!missing(j))
+        stop("When i is a matrix in dtrm[i] <- value syntax, it doesn't make sense to provide j")
+      x = `[<-.data.frame`(x, i, value = value)
+      return(setalloccol(x))
+    },
+    logical = seq_row(x)[i],
+    numeric = as.integer(i),
+    character = structure(seq_row(x), names = rownames(x))[i],
+    i)
+
+  # j can be column names (character) or numbers (integer)
+  if (is.double(j))
+    j <- as.integer(j)
+
+  force(value)
+
+  # No need to switch, since set accepts also data.frame, except if new columns are created,
+  # but it takes too long to test => switch all the time
+  let_data.trame_to_data.table(x)
+  on.exit(let_data.table_to_data.trame(x))
+  do.call(set, list(substitute(x), i = i, j = j,
+    value = value), envir = parent.frame())
+}
+
+#`.[` <- function(x, i, j, by, keyby, with = TRUE, nomatch = NA, mult = "all",
+#    roll = FALSE, rollends = if (roll == "nearest") c(TRUE, TRUE) else
+#    if (roll >= 0) c(FALSE, TRUE) else c(TRUE, FALSE), which = FALSE, .SDcols,
+#    verbose = getOption("datatable.verbose"),
+#    allow.cartesian = getOption("datatable.allow.cartesian"), drop = FALSE,
+#    on = NULL, env = NULL,
+#    showProgress = getOption("datatable.showProgress", interactive())) {
+#  UseMethod(".[")
+#}
+
+`.[.data.table` <- getS3method("[", "data.table")
+
+`.[.data.frame` <- function(x, i, j = seq_along(x), by, keyby, with = TRUE,
+    nomatch = NA, mult = "all", roll = FALSE, rollends = if (roll == "nearest")
+    c(TRUE, TRUE) else if (roll >= 0) c(FALSE, TRUE) else c(TRUE, FALSE),
+    which = FALSE, .SDcols, verbose = getOption("datatable.verbose"),
+    allow.cartesian = getOption("datatable.allow.cartesian"),
+    drop = if (missing(i)) TRUE else ncol(x) == 1, on = NULL, env = NULL,
+    showProgress = getOption("datatable.showProgress", interactive())) {
+  #if (missing(i) && missing(j))
+  #  return(x) # No subsetting, return the object as is
+  #xclass <- class(x)
+  #x <- as.data.frame(x)
+  #if (missing(i)) {
+  #  res <- x[, j, drop = drop]
+  #} else if (is.null(j)) {
+  #  res <- x[i, ]
+  #} else if (missing(j)) {
+  #  res <- x[i] # It selects on columns, while data.table selects on rows
+  #} else {
+  #  res <- x[i, j, drop = drop]
+  #}
+  #if (is.data.frame(res))
+  #  res <- as.data.trame(res)
+  #res
+  if (missing(i)) {
+    if (missing(j))
+      return(x)
+    res <- ss(x, j = j)
+  } else {# i provided
+    # In case i is character, try matchin on rownames
+    if (is.character(i))
+      i <- structure(seq_row(x), names = rownames(x))[i]
+    res <- ss(x, i, j)
+  }
+  if (isTRUE(drop) && ncol(res) == 1) {
+    res[[1]]
+  } else {
+    res
+  }
 }

@@ -1,3 +1,4 @@
+# TODO: indicate rownames if they are set
 #' Printing data.trames
 #'
 #' A data.trame prints almost like a tibble.
@@ -36,7 +37,7 @@ print.data.trame <- function(x, width = NULL, ..., n = NULL,
 #' @export
 format.data.trame <- function(x, width = NULL, ..., n = NULL,
   max_extra_cols = NULL, max_footer_lines = NULL) {
-  y <- as_tibble(x)
+  y <- as_tibble(x, .name_repair = "minimal")
   class(y) <- unique(c("datatrame", class(y)))
   format(y, width = width, ..., n = n, max_extra_cols = max_extra_cols,
     max_footer_lines = max_footer_lines)

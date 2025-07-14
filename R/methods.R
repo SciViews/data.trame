@@ -7,16 +7,7 @@
 # -> I need my own version (transpose_() ?), what about t() ?
 # TODO: cbind2(), rbind2() and S4 support
 
-# head/tail already return a data.trame
-#head.data.trame <- function(x, n = 6L, ...) {
-#  setattr(NextMethod("head"), 'class',
-#    c('data.trame', 'data.table', 'data.frame'))
-#}
-
-#tail.data.trame <- function(x, n = 6L, ...) {
-#  setattr(NextMethod("tail"), 'class',
-#    c('data.trame', 'data.table', 'data.frame'))
-#}
+# head/tail, no need to change
 
 #split?
 
@@ -26,51 +17,33 @@
 #' @export
 #' @noRd
 edit.data.trame <- function(name, ...) {
-  setattr(NextMethod("edit"), 'class',
-    c('data.trame', 'data.table', 'data.frame'))
+  qDT(NextMethod("edit", name), class = .dtrm_class)
 }
 
 # NextMethod() cannot be used for cbind() or rbind()
 # -> this is a workaround!
-#' @export
-#' @noRd
-.cbind <- function(..., keep.rownames = FALSE, check.names = FALSE,
-    key = NULL, stringsAsFactors = FALSE) {
-  UseMethod(".cbind")
-}
-
-#' @export
-#' @noRd
 .cbind.data.table <- getS3method("cbind", "data.table")
 
 #' @export
 #' @noRd
-cbind.data.trame <- function(..., keep.rownames = FALSE, check.names = FALSE,
+cbind.data.trame <- function(x, ..., keep.rownames = FALSE, check.names = FALSE,
    key = NULL, stringsAsFactors = FALSE) {
-  res <- do.call(.cbind, list(..., keep.rownames = keep.rownames,
-    check.names = check.names, key = key, stringsAsFactors = stringsAsFactors),
-    envir = parent.frame())
-  setattr(res, 'class', c('data.trame', 'data.table', 'data.frame'))
+  let_data.trame_to_data.table(x)
+  on.exit(let_data.table_to_data.trame(x))
+  .cbind.data.table(x, ..., keep.rownames = keep.rownames,
+    check.names = check.names, key = key, stringsAsFactors = stringsAsFactors)
 }
 
-#' @export
-#' @noRd
-.rbind <- function(..., use.names = TRUE, fill = FALSE, idcol = NULL,
-    ignore.attr = FALSE) {
-  UseMethod(".rbind")
-}
-
-#' @export
-#' @noRd
 .rbind.data.table <- getS3method("rbind", "data.table")
 
 #' @export
 #' @noRd
-rbind.data.trame <- function(..., use.names = TRUE, fill = FALSE, idcol = NULL,
-    ignore.attr = FALSE) {
-  res <- do.call(.rbind, list(..., use.names = use.names, fill = fill,
-    idcol = idcol, ignore.attr = ignore.attr), envir = parent.frame())
-  setattr(res, 'class', c('data.trame', 'data.table', 'data.frame'))
+rbind.data.trame <- function(x, ..., use.names = TRUE, fill = FALSE,
+    idcol = NULL, ignore.attr = FALSE) {
+  let_data.trame_to_data.table(x)
+  on.exit(let_data.table_to_data.trame(x))
+  .rbind.data.table(x, ..., use.names = use.names,
+    fill = fill, idcol = idcol, ignore.attr = ignore.attr)
 }
 
 # TODO:

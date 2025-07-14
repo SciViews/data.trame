@@ -13,8 +13,8 @@
 #'   `.name.repair = make.names` for base R style.
 #'
 #' @returns A 'data.trame' object, which is indeed a
-#'   'data.trame'/'data.table'/'data.frame' object, thus subclassing both
-#'   'data.table' and 'data.frame'. `is.data.trame()` returns `TRUE` if the
+#'   'data.trame'/'data.frame' object, thus subclassing 'data.frame'.
+#'   `is.data.trame()` returns `TRUE` if the
 #'   object is a 'data.trame', and `FALSE` otherwise.
 #' @export
 #'
@@ -27,13 +27,15 @@
 #' is.data.trame(dtrm)
 data.trame <- function(..., .key = NULL, .rows = NULL,
     .name_repair = c("check_unique", "unique", "universal", "minimal")) {
-  dtrm <- tibble(..., .rows = .rows, .name_repair = .name_repair)
-  #setDT(dtrm, keep.rownames = TRUE, key = .key)
-  setattr(dtrm, 'class', c('data.trame', 'data.table', 'data.frame'))
-  setalloccol(dtrm)
-  if (!is.null(.key))
-    setkeyv(dtrm, .key)
-  dtrm
+  res <- as_tibble(list(...), .rows = .rows, .namerepair = .name_repair)
+  if (!missing(.key)) {
+    res <- qDT(res)
+    setkeyv(res, .key)
+    let_data.table_to_data.trame(res)
+    res
+  } else {
+    qDT(res, class = .dtrm_class)
+  }
 }
 
 #' @rdname data.trame
@@ -52,14 +54,39 @@ as.data.trame.default <- function(x, .key = NULL, .rows = NULL,
     .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
     "minimal"), ...) {
   check_dots_empty0()
-  x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
+  res <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
     rownames = .rownames)
-  #setDT(x, keep.rownames = TRUE, key = .key)
-  setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
-  setalloccol(x)
-  if (!is.null(.key))
-    setkeyv(x, .key)
-  x
+  rnames <- rownames(res)
+
+  if (!missing(.key)) {
+    res <- qDT(res)
+    setkeyv(res, .key)
+    let_data.table_to_data.trame(res)
+  } else {
+    res <- qDT(res, class = .dtrm_class)
+  }
+  rownames(res) <- rnames
+  res
+}
+
+#' @rdname data.trame
+#' @export
+as.data.trame.list <- function(x, .key = NULL, .rows = NULL,
+  .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
+    "minimal"), ...) {
+  check_dots_empty0()
+  res <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
+    rownames = .rownames)
+  rnames <- rownames(res)
+  if (!missing(.key)) {
+    res <- qDT(res)
+    setkeyv(res, .key)
+    let_data.table_to_data.trame(res)
+  } else {
+    res <- qDT(res, class = .dtrm_class)
+  }
+  rownames(res) <- rnames
+  res
 }
 
 #' @rdname data.trame
@@ -71,11 +98,16 @@ as.data.trame.data.frame <- function(x, .key = NULL, .rows = NULL,
   if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair))
     x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
       rownames = .rownames)
-  setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
-  setalloccol(x)
-  if (!is.null(.key))
-    setkeyv(x, .key)
-  x
+  rnames <- rownames(x)
+  if (!missing(.key)) {
+    res <- qDT(x)
+    setkeyv(res, .key)
+    let_data.table_to_data.trame(res)
+  } else {
+    res <- qDT(x, class = .dtrm_class)
+  }
+  rownames(res) <- rnames
+  res
 }
 
 #' @rdname data.trame
@@ -84,15 +116,19 @@ as.data.trame.data.table <- function(x, .key = NULL, .rows = NULL,
     .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
     "minimal"), ...) {
   check_dots_empty0()
-  if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair)) {
+  if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair))
     x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
       rownames = .rownames)
+  rnames <- rownames(x)
+  if (!missing(.key)) {
+    res <- qDT(x)
+    setkeyv(res, .key)
+    let_data.table_to_data.trame(res)
+  } else {
+    res <- qDT(x, class = .dtrm_class)
   }
-  setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
-  setalloccol(x)
-  if (!is.null(.key))
-    setkeyv(x, .key)
-  x
+  rownames(res) <- rnames
+  res
 }
 
 #' @rdname data.trame
@@ -104,11 +140,20 @@ as.data.trame.data.trame <- function(x, .key = NULL, .rows = NULL,
   if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair)) {
     x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
       rownames = .rownames)
-    setattr(x, 'class', c('data.trame', 'data.table', 'data.frame'))
-    setalloccol(x)
-  }
-  if (!is.null(.key))
+    rnames <- rownames(x)
+    if (!missing(.key)) {
+      x <- qDT(x)
+      setkeyv(x, .key)
+      let_data.table_to_data.trame(x)
+    } else {
+      x <- qDT(x, class = .dtrm_class)
+    }
+    rownames(x) <- rnames
+  } else if (!missing(.key)) {
+    let_data.trame_to_data.table(x)
+    on.exit(let_data.table_to_data.trame(x))
     setkeyv(x, .key)
+  }
   x
 }
 

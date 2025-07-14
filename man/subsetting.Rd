@@ -4,11 +4,17 @@
 \alias{subsetting}
 \alias{[.data.trame}
 \alias{$.data.trame}
+\alias{set_}
+\alias{let_}
 \title{Subsetting data.trames}
 \usage{
 \method{[}{data.trame}(x, i, j, by, keyby, with = TRUE, drop = FALSE, ...)
 
 \method{$}{data.trame}(x, name)
+
+set_(x, i, j, value, byref = FALSE)
+
+let_(x, i = NULL, j = seq_along(x), value)
 }
 \arguments{
 \item{x}{A data.trame object.}
@@ -37,6 +43,10 @@ formulas.}
 \item{...}{Further arguments passed to the underlying \code{data.table} subsetting}
 
 \item{name}{The name of the column to extract.}
+
+\item{value}{The value to insert as subassignment in a data.trame object.}
+
+\item{byref}{Logical, whether to use by reference or not (\code{FALSE} by default).}
 }
 \value{
 A data.trame object, or a vector if \code{drop = TRUE} and the result has
@@ -56,7 +66,8 @@ dtrm <- data.trame(
 dtrm[1:2, ]
 dtrm[-1, ]
 dtrm[c(TRUE, FALSE, TRUE), ]
-# On the contrary to tibble, providing only one arg, means subsetting rows too
+# On the contrary to data.table, providing only one arg, means subsetting
+# columns (like for data.frame or tibble)
 dtrm[c(TRUE, FALSE, TRUE)]
 dtrm[dtrm$a > 1, ] # Must fully qualify the column name
 # Subsetting the data.table way, with formulas: no fully qualification needed
@@ -81,21 +92,17 @@ dtrm[, ~..sel] # In data.table language, this is how you access `sel`
 
 # Extended data.table syntax using i, j, by, or keyby with formulas
 # Warning: due to precedence of operators, you must use braces here!
-dtrm[, ~{d := paste0(b, c)}]
-dtrm  # Changed in place (by reference!)
+dtrm[, ~{d := paste0(b, c)}] # Changed in place (by reference!)
 # Another form that does not need braces, but is less readable:
 dtrm[, ~`:=`(e, paste0(b, a))]
 # or equivalently:
 dtrm[, ~let(e = paste0(b, a))]
-dtrm
 # In this case, it is much better to just replace `:=` by `~`, but internally
 # it uses set(). It is faster, but much more limited and cannot use by or
 # or keyby:
 dtrm[, f ~ paste0(c, a)]
-dtrm
 # One can also use standard evaluation in that case using with = FALSE
 dtrm[, f ~ paste0(dtrm$c, dtrm$a), with = FALSE]
-dtrm
 #
 # Take care when you provide only one argument:
 # If it is a formula, the data.table syntax is used (select rows)

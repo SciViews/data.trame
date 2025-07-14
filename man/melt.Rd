@@ -31,7 +31,7 @@ melt(data, ..., na.rm = FALSE, value.name = "value")
 
 \item{id.vars}{Vector of \code{id} variables.}
 
-\item{measure.vars}{Measure variables for melting.}
+\item{measure.vars}{Measure variables for melting. Can be missing.}
 
 \item{variable.name}{Name (default \code{variable}) of output column containing
 the information about melted columns.}

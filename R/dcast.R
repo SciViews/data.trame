@@ -39,7 +39,7 @@ guess <- function (x) {
 #' # Adapted from first example of ?dcast.data.table
 #' ChickWeight = as.data.trame(ChickWeight)
 #' names(ChickWeight) <- tolower(names(ChickWeight))
-#' dtrm <- melt(as.data.trame(ChickWeight), id.vars = 2:4)
+#' dtrm <- melt(ChickWeight, id.vars = 2:4)
 #' dcast(dtrm, time ~ variable, fun.aggregate = mean)
 dcast <- function(data, formula, fun.aggregate = NULL, ..., margins = NULL,
     subset = NULL, fill = NULL, value.var = guess(data)) {
@@ -51,11 +51,13 @@ dcast <- function(data, formula, fun.aggregate = NULL, ..., margins = NULL,
 dcast.data.trame <- function(data, formula, fun.aggregate = NULL,
   sep = "_", ..., margins = NULL, subset = NULL, fill = NULL, drop = TRUE,
   value.var = guess(data), verbose = getOption("datatable.verbose")) {
-  # Parenthesis, otherwise, it returns the object invisibly
-  (setattr(NextMethod("dcast"), 'class',
-    c('data.trame', 'data.table', 'data.frame')))
+  let_data.trame_to_data.table(data)
+  on.exit(let_data.table_to_data.trame(data))
+  res <- do.call(.dcast.data.table, list(data, formula = formula,
+    fun.aggregate = fun.aggregate,..., margins = margins, subset = subset,
+    fill = fill, value.var = value.var), envi = parent.frame())
+  let_data.table_to_data.trame(res)
+  res
 }
 
-#' @export
-#' @noRd
-dcast.data.table <- data.table::dcast.data.table
+.dcast.data.table <- data.table::dcast.data.table

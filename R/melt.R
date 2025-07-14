@@ -6,7 +6,7 @@
 #'
 #' @param data A data.trame object.
 #' @param id.vars Vector of `id` variables.
-#' @param measure.vars Measure variables for melting.
+#' @param measure.vars Measure variables for melting. Can be missing.
 #' @param variable.name Name (default `variable`) of output column containing
 #'   the information about melted columns.
 #' @param value.name Name for the molten data values column(s).
@@ -53,10 +53,23 @@ melt.data.trame <- function(data, id.vars, measure.vars,
     variable.name = "variable", value.name = "value", ..., na.rm = FALSE,
     variable.factor = TRUE, value.factor = FALSE,
     verbose = getOption("datatable.verbose")) {
-  (setattr(NextMethod("melt", data), 'class',
-    c('data.trame', 'data.table', 'data.frame')))
+  let_data.trame_to_data.table(data)
+  on.exit(let_data.table_to_data.trame(data))
+  if (missing(measure.vars)) {
+    res <- do.call(.melt.data.table, list(data, id.vars = id.vars,
+      variable.name = variable.name,
+      value.name = value.name, ..., na.rm = na.rm,
+      variable.factor = variable.factor, value.factor = value.factor,
+      verbose = verbose), envir = parent.frame())
+  } else {
+    res <- do.call(.melt.data.table, list(data, id.vars = id.vars,
+      measure.vars = measure.vars, variable.name = variable.name,
+      value.name = value.name, ..., na.rm = na.rm,
+      variable.factor = variable.factor, value.factor = value.factor,
+      verbose = verbose), envir = parent.frame())
+  }
+  let_data.table_to_data.trame(res)
+  res
 }
 
-#' @export
-#' @noRd
-melt.data.table <- data.table::melt.data.table
+.melt.data.table <- data.table::melt.data.table

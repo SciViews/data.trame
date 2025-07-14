@@ -4,6 +4,7 @@
 \alias{data.trame}
 \alias{as.data.trame}
 \alias{as.data.trame.default}
+\alias{as.data.trame.list}
 \alias{as.data.trame.data.frame}
 \alias{as.data.trame.data.table}
 \alias{as.data.trame.data.trame}
@@ -27,6 +28,15 @@ as.data.trame(
 )
 
 \method{as.data.trame}{default}(
+  x,
+  .key = NULL,
+  .rows = NULL,
+  .rownames = NA,
+  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  ...
+)
+
+\method{as.data.trame}{list}(
   x,
   .key = NULL,
   .rows = NULL,
@@ -88,8 +98,8 @@ original object, if any. If \code{NA} (default), row names are left intact. If
 }
 \value{
 A 'data.trame' object, which is indeed a
-'data.trame'/'data.table'/'data.frame' object, thus subclassing both
-'data.table' and 'data.frame'. \code{is.data.trame()} returns \code{TRUE} if the
+'data.trame'/'data.frame' object, thus subclassing 'data.frame'.
+\code{is.data.trame()} returns \code{TRUE} if the
 object is a 'data.trame', and \code{FALSE} otherwise.
 }
 \description{

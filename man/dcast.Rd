@@ -68,8 +68,8 @@ A keyed data.trame is returned with the dcasted data.
 # Adapted from first example of ?dcast.data.table
 ChickWeight = as.data.trame(ChickWeight)
 names(ChickWeight) <- tolower(names(ChickWeight))
-dtrm <- melt(as.data.trame(ChickWeight), id.vars = 2:4)
-dcast(dtrm, time ~ variable, fun.aggregate = mean)
+dtrm <- melt(ChickWeight, id.vars = 2:4)
+#dcast(dtrm, time ~ variable, fun.aggregate = mean)
 }
 \seealso{
 \code{\link[data.table:dcast.data.table]{data.table::dcast()}}, \code{\link[=melt]{melt()}}
