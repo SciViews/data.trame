@@ -133,6 +133,16 @@
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'data.trame'</span></span>
+<span><span class="fu">as.data.trame</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  .key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .rownames <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'data.table'</span></span>
 <span><span class="fu">as.data.trame</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
@@ -144,14 +154,7 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'data.trame'</span></span>
-<span><span class="fu">as.data.trame</span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  .key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  .rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  .rownames <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu">as.data.table</span><span class="op">(</span><span class="va">x</span>, keep.rownames <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">is.data.trame</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -191,6 +194,10 @@ except for existence), or a function for custom name repair, e.g.,
 <dd><p>The name of the column that holds the row names of the
 original object, if any. If <code>NA</code> (default), row names are left intact. If
 <code>NULL</code> row names are removed.</p></dd>
+
+
+<dt id="arg-keep-rownames">keep.rownames<a class="anchor" aria-label="anchor" href="#arg-keep-rownames"></a></dt>
+<dd><p>For compatibility with the generic, but not used here</p></dd>
 
 </dl></div>
     <div id="value">
