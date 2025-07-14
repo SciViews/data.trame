@@ -26,7 +26,11 @@
 #' str(dtrm)
 print.data.trame <- function(x, width = NULL, ..., n = NULL,
   max_extra_cols = NULL, max_footer_lines = NULL) {
+  rn <- attr(x, "row.names") # Note row.names() coerces to character
   y <- as_tibble(x, .name_repair = "minimal")
+  if (is.character(rn)) # Add a (row names) column
+    attr(y, "row.names") <- rn
+    #y <- add_column(y, " " = structure(rn, class = "rnms"), .before = 1L)
   class(y) <- unique(c("datatrame", class(y)))
   print(y, width = width, ..., n = n, max_extra_cols = max_extra_cols,
     max_footer_lines = max_footer_lines)
@@ -37,7 +41,11 @@ print.data.trame <- function(x, width = NULL, ..., n = NULL,
 #' @export
 format.data.trame <- function(x, width = NULL, ..., n = NULL,
   max_extra_cols = NULL, max_footer_lines = NULL) {
+  rn <- attr(x, "row.names") # Note row.names() coerces to character
   y <- as_tibble(x, .name_repair = "minimal")
+  if (is.character(rn)) # Add a (row names) column
+    #y <- cbind(as_tibble(list(`(row names)` = rn)), y)
+    attr(y, "row.names") <- rn
   class(y) <- unique(c("datatrame", class(y)))
   format(y, width = width, ..., n = n, max_extra_cols = max_extra_cols,
     max_footer_lines = max_footer_lines)
@@ -82,6 +90,36 @@ tbl_sum.data.trame <- tbl_sum.datatrame
 #' @export
 tbl_nrow.data.trame <- function(x, ...) {
   nrow(x)
+}
+
+# @rdname print.data.trame
+# @param controller A controller object, used to control the printing.
+#' @noRd
+#' @export
+ctl_new_rowid_pillar.datatrame <- function(controller, x, width, ...,
+    title = NULL, type = NULL) {
+  out <- NextMethod()
+  rn <- attr(controller, "row.names") # No: row.names are lost in x
+  if (is.character(rn)) {
+    rowid <- rn[1:nrow(x)]
+    width <- max(nchar(rowid))
+  } else {
+    rowid <- seq_row(x)
+    width <- max(nchar(as.character(rowid)))
+  }
+  new_pillar(
+    list(
+      title = out$title,
+      type = out$type,
+      data = pillar_component(
+        new_pillar_shaft(list(row_ids = rowid),
+          width = width,
+          class = "pillar_rif_shaft"
+        )
+      )
+    ),
+    width = width
+  )
 }
 
 #' @rdname print.data.trame

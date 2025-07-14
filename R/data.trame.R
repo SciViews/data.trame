@@ -65,7 +65,8 @@ as.data.trame.default <- function(x, .key = NULL, .rows = NULL,
   } else {
     res <- qDT(res, class = .dtrm_class)
   }
-  rownames(res) <- rnames
+  if (is.character(rnames))
+    setattr(res, "row.names", rnames)
   res
 }
 
@@ -85,7 +86,8 @@ as.data.trame.list <- function(x, .key = NULL, .rows = NULL,
   } else {
     res <- qDT(res, class = .dtrm_class)
   }
-  rownames(res) <- rnames
+  if (is.character(rnames))
+    setattr(res, "row.names", rnames)
   res
 }
 
@@ -106,28 +108,8 @@ as.data.trame.data.frame <- function(x, .key = NULL, .rows = NULL,
   } else {
     res <- qDT(x, class = .dtrm_class)
   }
-  rownames(res) <- rnames
-  res
-}
-
-#' @rdname data.trame
-#' @export
-as.data.trame.data.table <- function(x, .key = NULL, .rows = NULL,
-    .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
-    "minimal"), ...) {
-  check_dots_empty0()
-  if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair))
-    x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
-      rownames = .rownames)
-  rnames <- rownames(x)
-  if (!missing(.key)) {
-    res <- qDT(x)
-    setkeyv(res, .key)
-    let_data.table_to_data.trame(res)
-  } else {
-    res <- qDT(x, class = .dtrm_class)
-  }
-  rownames(res) <- rnames
+  if (is.character(rnames))
+    setattr(res, "row.names", rnames)
   res
 }
 
@@ -137,24 +119,61 @@ as.data.trame.data.trame <- function(x, .key = NULL, .rows = NULL,
   .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
     "minimal"), ...) {
   check_dots_empty0()
+  if (missing(.key))
+    .key <- key(x)
   if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair)) {
     x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
       rownames = .rownames)
     rnames <- rownames(x)
-    if (!missing(.key)) {
+    if (!is.null(.key)) {
       x <- qDT(x)
       setkeyv(x, .key)
       let_data.table_to_data.trame(x)
     } else {
       x <- qDT(x, class = .dtrm_class)
     }
-    rownames(x) <- rnames
-  } else if (!missing(.key)) {
+    if (is.character(rnames))
+      setattr(x, "row.names", rnames)
+  } else if (!is.null(.key)) {
     let_data.trame_to_data.table(x)
     on.exit(let_data.table_to_data.trame(x))
     setkeyv(x, .key)
   }
   x
+}
+
+#' @rdname data.trame
+#' @export
+as.data.trame.data.table <- function(x, .key = NULL, .rows = NULL,
+  .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
+    "minimal"), ...) {
+  check_dots_empty0()
+  if (missing(.key))
+    .key <- key(x)
+  if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair))
+    x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
+      rownames = .rownames)
+  rnames <- rownames(x)
+  if (!is.null(.key)) {
+    res <- qDT(x)
+    setkeyv(res, .key)
+    let_data.table_to_data.trame(res)
+  } else {
+    res <- qDT(x, class = .dtrm_class)
+  }
+  if (is.character(rnames))
+    setattr(res, "row.names", rnames)
+  res
+}
+
+#' @rdname data.trame
+#' @param keep.rownames For compatibility with the generic, but not used here
+#' @export
+as.data.table.data.trame <- function(x, keep.rownames = FALSE, ...) {
+  check_dots_empty0()
+  if (!missing(keep.rownames))
+    warning("When converting from data.trame to data.tabel, keep.rownames= is ignored.")
+  qDT(x, row.names.col = FALSE, keep.attr = TRUE)
 }
 
 #as.tibble <- svMisc::aka(tibble::as_tibble) # Should be nice to have

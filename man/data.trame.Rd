@@ -6,8 +6,9 @@
 \alias{as.data.trame.default}
 \alias{as.data.trame.list}
 \alias{as.data.trame.data.frame}
-\alias{as.data.trame.data.table}
 \alias{as.data.trame.data.trame}
+\alias{as.data.trame.data.table}
+\alias{as.data.table.data.trame}
 \alias{is.data.trame}
 \title{Build, coerce and test for 'data.trame' objects}
 \usage{
@@ -54,6 +55,15 @@ as.data.trame(
   ...
 )
 
+\method{as.data.trame}{data.trame}(
+  x,
+  .key = NULL,
+  .rows = NULL,
+  .rownames = NA,
+  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  ...
+)
+
 \method{as.data.trame}{data.table}(
   x,
   .key = NULL,
@@ -63,14 +73,7 @@ as.data.trame(
   ...
 )
 
-\method{as.data.trame}{data.trame}(
-  x,
-  .key = NULL,
-  .rows = NULL,
-  .rownames = NA,
-  .name_repair = c("check_unique", "unique", "universal", "minimal"),
-  ...
-)
+\method{as.data.table}{data.trame}(x, keep.rownames = FALSE, ...)
 
 is.data.trame(x)
 }
@@ -95,6 +98,8 @@ except for existence), or a function for custom name repair, e.g.,
 \item{.rownames}{The name of the column that holds the row names of the
 original object, if any. If \code{NA} (default), row names are left intact. If
 \code{NULL} row names are removed.}
+
+\item{keep.rownames}{For compatibility with the generic, but not used here}
 }
 \value{
 A 'data.trame' object, which is indeed a

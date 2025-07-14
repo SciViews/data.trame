@@ -38,7 +38,7 @@ guess <- function (x) {
 #' @examples
 #' # Adapted from first example of ?dcast.data.table
 #' ChickWeight = as.data.trame(ChickWeight)
-#' names(ChickWeight) <- tolower(names(ChickWeight))
+#' ChickWeight <- set_names(ChickWeight, tolower(names(ChickWeight)))
 #' dtrm <- melt(ChickWeight, id.vars = 2:4)
 #' dcast(dtrm, time ~ variable, fun.aggregate = mean)
 dcast <- function(data, formula, fun.aggregate = NULL, ..., margins = NULL,
@@ -55,7 +55,7 @@ dcast.data.trame <- function(data, formula, fun.aggregate = NULL,
   on.exit(let_data.table_to_data.trame(data))
   res <- do.call(.dcast.data.table, list(data, formula = formula,
     fun.aggregate = fun.aggregate,..., margins = margins, subset = subset,
-    fill = fill, value.var = value.var), envi = parent.frame())
+    fill = fill, value.var = value.var), envir = parent.frame())
   let_data.table_to_data.trame(res)
   res
 }

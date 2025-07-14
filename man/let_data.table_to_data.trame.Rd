@@ -35,6 +35,7 @@ test_fun <- function(x, i, expr) {
   # value will be evaluated with x being a data.table here!
   let_data.trame_to_data.table(x)
   on.exit(let_data.table_to_data.trame(x))
+  print(class(x)) # Internally, it is now a data.table
   expr
 }
 test_fun(dtrm, 1:2, class(dtrm))
