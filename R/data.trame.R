@@ -32,10 +32,12 @@ data.trame <- function(..., .key = NULL, .rows = NULL,
     res <- qDT(res)
     setkeyv(res, .key)
     let_data.table_to_data.trame(res)
-    res
   } else {
-    qDT(res, class = .dtrm_class)
+    res <- qDT(res, class = .dtrm_class)
   }
+  # qDT() only overallocate 100 positions, use setalloccol() now
+  setalloccol(res)
+  res
 }
 
 #' @rdname data.trame

@@ -85,11 +85,11 @@ tail.data.trame <- function(x, n = 6L, ...) {
   # If there are keys, we must also rename them
   key <- attr(x, "sorted")
   if (is.null(key)) {# None, no problems
-    setattr(x, "names", value)
+    setnames(x, value)
   } else { # We have a key, so we must rename it
     conv <- structure(value, names = names(x))
     setattr(x, "sorted", conv[key])
-    setattr(x, "names", value)
+    setnames(x, value)
   }
 }
 
@@ -106,11 +106,11 @@ let_names <- function(x, value) {
   # If there are keys, we must also rename them
   key <- attr(x, "sorted")
   if (is.null(key)) {# None, no problems
-    setattr(x, "names", value)
+    setnames(x, value)
   } else { # We have a key, so we must rename it
     conv <- structure(value, names = names(x))
     setattr(x, "sorted", conv[key])
-    setattr(x, "names", value)
+    setnames(x, value)
   }
 }
 

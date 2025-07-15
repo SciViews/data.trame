@@ -15,7 +15,7 @@
 ## usethis namespace: start
 #' @importFrom checkmate check_character
 #' @importFrom collapse any_duplicated fnrow qDT seq_row setv ss
-#' @importFrom data.table %chin% as.data.table copy cube dcast dcast.data.table groupingsets is.data.table key let melt melt.data.table rollup set setalloccol setattr setDT setkeyv .N .I `:=`
+#' @importFrom data.table %chin% as.data.table copy cube dcast dcast.data.table groupingsets is.data.table key let melt melt.data.table rollup set setalloccol setattr setDT setnames setkeyv .N .I `:=`
 #' @importFrom pillar ctl_new_rowid_pillar new_pillar new_pillar_shaft pillar_component tbl_nrow
 #' @importFrom rlang check_dots_empty0 f_lhs f_rhs
 #' @importFrom tibble add_column as_tibble obj_sum size_sum tbl_sum tibble
