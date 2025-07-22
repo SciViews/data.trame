@@ -176,9 +176,7 @@ as.data.trame.data.table <- function(x, .key = NULL, .rows = NULL,
 #' @export
 as.data.table.data.trame <- function(x, keep.rownames = FALSE, ...) {
   check_dots_empty0()
-  if (!missing(keep.rownames))
-    warning("When converting from data.trame to data.tabel, keep.rownames= is ignored.")
-  qDT(x, row.names.col = FALSE, keep.attr = TRUE)
+  qDT(x, row.names.col = keep.rownames, keep.attr = TRUE)
 }
 
 #as.tibble <- svMisc::aka(tibble::as_tibble) # Should be nice to have
