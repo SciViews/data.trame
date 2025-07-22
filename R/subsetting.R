@@ -90,8 +90,6 @@
 #' dtrm$count #OK
 #' #dtrm$co # Not OK, no partial match allowed
 `[.data.trame` <- function(x, i, j, by, keyby, with = TRUE, drop = FALSE, ...) {
-  let_data.trame_to_data.table(x)
-  on.exit(let_data.table_to_data.trame(x))
 
   if (missing(j)) {
     # by/keyby can only be provided when j is a formula
@@ -103,6 +101,8 @@
       if (!is.null(f_lhs(i)))
         stop("the formula in i cannot have a left-hand side")
       i <- f_rhs(i)
+      let_data.trame_to_data.table(x)
+      on.exit(let_data.table_to_data.trame(x))
       res <- do.call(`.[.data.table`, list(x, i, drop = drop, ...),
         envir = parent.frame()) # with applies only on j
     } else {# i is not a formula, use the data.frame syntax:
@@ -184,6 +184,8 @@
         by <- f_rhs(by)
         if (missing(keyby)) {
           if (missing(i)) {
+            let_data.trame_to_data.table(x)
+            on.exit(let_data.table_to_data.trame(x))
             res <- do.call(`.[.data.table`, list(substitute(x), j = j, by = by,
               with = with, drop = FALSE, ...), envir = parent.frame())
           } else {
@@ -192,6 +194,8 @@
             if (!is.null(f_lhs(i)))
               stop("the formula in i cannot have a left-hand side")
             i <- f_rhs(i)
+            let_data.trame_to_data.table(x)
+            on.exit(let_data.table_to_data.trame(x))
             res <- do.call(`.[.data.table`, list(substitute(x), i, j, by,
               with = with, drop = FALSE, ...), envir = parent.frame())
           }
@@ -199,6 +203,8 @@
           stop("keyby must be TRUE or FALSE when by is provided")
         } else {
           if (missing(i)) {
+            let_data.trame_to_data.table(x)
+            on.exit(let_data.table_to_data.trame(x))
             res <- do.call(`.[.data.table`, list(substitute(x), j = j, by = by,
               keyby = keyby, with = with, drop = FALSE, ...),
               envir = parent.frame())
@@ -208,6 +214,8 @@
             if (!is.null(f_lhs(i)))
               stop("the formula in i cannot have a left-hand side")
             i <- f_rhs(i)
+            let_data.trame_to_data.table(x)
+            on.exit(let_data.table_to_data.trame(x))
             res <- do.call(`.[.data.table`, list(substitute(x), i, j, by, keyby,
               with = with, drop = FALSE, ...), envir = parent.frame())
           }
@@ -216,6 +224,8 @@
       } else {# by is missing
         if (missing(keyby)) {
           if (missing(i)) {
+            let_data.trame_to_data.table(x)
+            on.exit(let_data.table_to_data.trame(x))
             res <- do.call(`.[.data.table`, list(substitute(x), j = j,
               with = with, drop = FALSE, ...), envir = parent.frame())
           } else {
@@ -224,6 +234,8 @@
                 stop("the formula in i cannot have a left-hand side")
               i <- f_rhs(i)
             }
+            let_data.trame_to_data.table(x)
+            on.exit(let_data.table_to_data.trame(x))
             res <- do.call(`.[.data.table`, list(substitute(x), i, j,
               with = with, drop = FALSE, ...), envir = parent.frame())
           }
@@ -234,6 +246,8 @@
             stop("the formula in keyby cannot have a left-hand side")
           keyby <- f_rhs(keyby)
           if (missing(i)) {
+            let_data.trame_to_data.table(x)
+            on.exit(let_data.table_to_data.trame(x))
             res <- do.call(`.[.data.table`, list(substitute(x), j = j,
               keyby = keyby, with = with, drop = FALSE, ...),
               envir = parent.frame())
@@ -243,6 +257,8 @@
                 stop("the formula in i cannot have a left-hand side")
               i <- f_rhs(i)
             }
+            let_data.trame_to_data.table(x)
+            on.exit(let_data.table_to_data.trame(x))
             res <- do.call(`.[.data.table`, list(substitute(x), i, j,
               keyby = keyby, with = with, drop = FALSE, ...),
               envir = parent.frame())
@@ -259,15 +275,17 @@
   }
 }
 
-#' @rdname subsetting
-#' @param name The name of the column to extract.
-#' @export
-`$.data.trame` <- function(x, name) {
-  out <- .subset2(x, name)
-  if (is.null(out))
-    warning("Unknown or uninitialised column: ", name, ".")
-  out
-}
+# This is equivalent to `$.tbl_df`, but for now,
+# we prefer to keep the data.frame method
+# @rdname subsetting
+# @param name The name of the column to extract.
+# @export
+#`$.data.trame` <- function(x, name) {
+#  out <- .subset2(x, name)
+#  if (is.null(out))
+#    warning("Unknown or uninitialised column: ", name, ".")
+#  out
+#}
 
 # TODO: should we be strict: only 1 or nrow(x) len for i?
 # TODO: should we rebuild key (and eliminate if if column removed)? To be tested!
@@ -301,12 +319,12 @@ set_ <- function(x, i, j, value, byref = FALSE) {
 
     force(value)
 
-    # No need to switch, since set accepts also data.frame, except if new columns are created,
-    # but it takes too long to test => switch all the time
+    # No need to switch, since set accepts also data.frame, except if new
+    # columns are created, but it takes too long to test => switch all the time
     let_data.trame_to_data.table(x)
     on.exit(let_data.table_to_data.trame(x))
-    do.call(set, list(substitute(x), i = i, j = j,
-      value = value), envir = parent.frame())
+    do.call(set, list(substitute(x), i = i, j = j, value = value),
+      envir = parent.frame())
 
   } else {# byref = FALSE
     NextMethod("[<-", x) # Use the data.frame method instead
@@ -334,12 +352,12 @@ let_ <- function(x, i = NULL, j = seq_along(x), value) {
 
   force(value)
 
-  # No need to switch, since set accepts also data.frame, except if new columns are created,
-  # but it takes too long to test => switch all the time
+  # No need to switch, since set accepts also data.frame, except if new columns
+  # are created, but it takes too long to test => switch all the time
   let_data.trame_to_data.table(x)
   on.exit(let_data.table_to_data.trame(x))
-  do.call(set, list(substitute(x), i = i, j = j,
-    value = value), envir = parent.frame())
+  do.call(set, list(substitute(x), i = i, j = j, value = value),
+    envir = parent.frame())
 }
 
 #`.[` <- function(x, i, j, by, keyby, with = TRUE, nomatch = NA, mult = "all",
@@ -382,7 +400,7 @@ let_ <- function(x, i = NULL, j = seq_along(x), value) {
       return(x)
     res <- ss(x, j = j)
   } else {# i provided
-    # In case i is character, try matchin on rownames
+    # In case i is character, try matching on rownames
     if (is.character(i))
       i <- structure(seq_row(x), names = rownames(x))[i]
     res <- ss(x, i, j)

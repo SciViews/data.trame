@@ -15,6 +15,7 @@ the nice features of 'tibble' (petty printing, stricter rules...).
 \item \code{\link[=data.trame]{data.trame()}} to construct a data.trame object,
 \item \code{\link[=as.data.trame]{as.data.trame()}} to coerce into a data.trame object.
 \item \code{\link[=is.data.trame]{is.data.trame()}} to test for data.trame objects.
+\item Methods for data.frame objects.
 }
 }
 

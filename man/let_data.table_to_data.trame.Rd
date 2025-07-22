@@ -18,7 +18,8 @@ A data.table or data.trame object.
 \description{
 These functions just change the class of the object by reference (data.trame
 and data.table objects are, internally, identical except for their class).
-These functions are intended only for programmers!
+These functions are intended only for programmers! There is no check that the
+object is correct before the change.
 }
 \examples{
 dtrm <- data.trame(a = 1:3, b = letters[1:3], c = factor(LETTERS[1:3]))

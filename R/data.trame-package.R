@@ -11,6 +11,8 @@
 #' - [as.data.trame()] to coerce into a data.trame object.
 #'
 #' - [is.data.trame()] to test for data.trame objects.
+#'
+#' - Methods for data.frame objects.
 
 ## usethis namespace: start
 #' @importFrom checkmate check_character

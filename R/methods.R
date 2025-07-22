@@ -106,11 +106,11 @@ let_names <- function(x, value) {
   # If there are keys, we must also rename them
   key <- attr(x, "sorted")
   if (is.null(key)) {# None, no problems
-    setnames(x, value)
+    setnames(x, c(value))
   } else { # We have a key, so we must rename it
     conv <- structure(value, names = names(x))
     setattr(x, "sorted", conv[key])
-    setnames(x, value)
+    setnames(x, c(value))
   }
 }
 
@@ -149,7 +149,7 @@ let_row_names <- function(x, value) {
 #' @export
 #' @param name The name of the data.trame to edit.
 edit.data.trame <- function(name, ...) {
-  qDT(NextMethod("edit", name), class = .dtrm_class)
+  qDT(NextMethod("edit", name), class = c(.dtrm_class))
 }
 
 #' @rdname methods

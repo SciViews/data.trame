@@ -3,14 +3,11 @@
 \name{subsetting}
 \alias{subsetting}
 \alias{[.data.trame}
-\alias{$.data.trame}
 \alias{set_}
 \alias{let_}
 \title{Subsetting data.trames}
 \usage{
 \method{[}{data.trame}(x, i, j, by, keyby, with = TRUE, drop = FALSE, ...)
-
-\method{$}{data.trame}(x, name)
 
 set_(x, i, j, value, byref = FALSE)
 
@@ -41,8 +38,6 @@ formulas.}
 \item{drop}{Coerce to a vector if the returned data.trame only has one column}
 
 \item{...}{Further arguments passed to the underlying \code{data.table} subsetting}
-
-\item{name}{The name of the column to extract.}
 
 \item{value}{The value to insert as subassignment in a data.trame object.}
 

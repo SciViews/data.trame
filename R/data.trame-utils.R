@@ -12,7 +12,8 @@
 #'
 #' These functions just change the class of the object by reference (data.trame
 #' and data.table objects are, internally, identical except for their class).
-#' These functions are intended only for programmers!
+#' These functions are intended only for programmers! There is no check that the
+#' object is correct before the change.
 #'
 #' @param x A valid data.trame or data.table object
 #'
