@@ -398,11 +398,22 @@ let_ <- function(x, i = NULL, j = seq_along(x), value) {
   if (missing(i)) {
     if (missing(j))
       return(x)
-    res <- ss(x, j = j)
+    if (is.numeric(j) && length(j) && allv(j, 0L)) {# Special case: j = 0)
+      return(`[.data.frame`(x, , j, drop = drop))
+    } else {
+      res <- ss(x, j = j)
+    }
   } else {# i provided
     # In case i is character, try matching on rownames
-    if (is.character(i))
+    if (is.character(i)) {
       i <- structure(seq_row(x), names = rownames(x))[i]
+    } else {
+      # In case all i or all j are 0, ss() does not returns the correct result
+      if ((length(i) && allv(i, 0L)) ||
+        (is.numeric(j) && length(j) && allv(j, 0L))) {# either i or j = 0
+        return(`[.data.frame`(x, i, j, drop = drop))
+      }
+    }
     res <- ss(x, i, j)
   }
   if (isTRUE(drop) && ncol(res) == 1) {

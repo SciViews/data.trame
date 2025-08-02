@@ -1,7 +1,7 @@
 Package: data.trame
 Type: Package
 Version: 0.9.0
-Title: A better 'data.frame' for 'SciViews::R'
+Title: 'SciViews::R' - A Better Data Frame
 Description: The 'data.trame' object is an hybrid between 'data.table',
   'tibble' and 'data.frame'. It enhances the 'data.frame' with the speed of
   'data.table' and the nice features of 'tibble' (petty printing, stricter
@@ -21,12 +21,13 @@ Imports:
     tibble (>= 3.2.1),
     utils (>= 4.4.0)
 Suggests:
+    covr (>= 3.5.0),
     knitr (>= 1.42),
     rmarkdown (>= 2.21),
     spelling (>= 2.2.1),
     testthat (>= 3.0.0)
 License: MIT + file LICENSE
-URL: https://github.com/SciViews/data.trame, https://www.sciviews.org/data.trame/
+URL: https://github.com/SciViews/data.trame, https://www.sciviews.org/data.trame/, https://sciviews.r-universe.dev/data.trame
 BugReports: https://github.com/SciViews/data.trame/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
