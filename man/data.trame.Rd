@@ -9,6 +9,8 @@
 \alias{as.data.trame.data.trame}
 \alias{as.data.trame.data.table}
 \alias{as.data.table.data.trame}
+\alias{as.data.frame.data.trame}
+\alias{as_tibble.data.trame}
 \alias{is.data.trame}
 \title{Build, coerce and test for 'data.trame' objects}
 \usage{
@@ -75,6 +77,17 @@ as.data.trame(
 
 \method{as.data.table}{data.trame}(x, keep.rownames = FALSE, ...)
 
+\method{as.data.frame}{data.trame}(x, row.names = NULL, optional = TRUE, ..., keep.attr = FALSE)
+
+\method{as_tibble}{data.trame}(
+  x,
+  ...,
+  .rows = NULL,
+  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  rownames = NULL,
+  keep.attr = FALSE
+)
+
 is.data.trame(x)
 }
 \arguments{
@@ -100,6 +113,16 @@ original object, if any. If \code{NA} (default), row names are left intact. If
 \code{NULL} row names are removed.}
 
 \item{keep.rownames}{For compatibility with the generic, but not used here}
+
+\item{row.names}{A character vector of row names, or \code{NULL} (default).}
+
+\item{optional}{If \code{TRUE}, the row names are not checked for uniqueness.
+If \code{FALSE}, the row names are corrected with \code{\link[=make.names]{make.names()}}.}
+
+\item{keep.attr}{If \code{TRUE}, the attributes of the data frame are kept.}
+
+\item{rownames}{\code{NULL} remove row names, \code{NA} (default) leaves them, or a
+single string to create a column with that name.}
 }
 \value{
 A 'data.trame' object, which is indeed a

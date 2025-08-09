@@ -1,3 +1,5 @@
+# TODO: replace as_tibble() in the as.xxx() functions by qTBL(), because
+# as_tibble() does not strip away the .internal.selfref attribute of data.table
 #' Build, coerce and test for 'data.trame' objects
 #'
 #' @param ... A set of name-value pairs that constitute the 'data.trame'.
@@ -58,10 +60,10 @@ as.data.trame <- function(x, .key = NULL, .rows = NULL, .rownames = NA,
 as.data.trame.default <- function(x, .key = NULL, .rows = NULL,
     .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
     "minimal"), ...) {
-  check_dots_empty0()
+  check_dots_empty()
   res <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
     rownames = .rownames)
-  rnames <- rownames(res)
+  rnames <- row.names(res)
 
   if (!missing(.key)) {
     res <- qDT(res)
@@ -80,10 +82,10 @@ as.data.trame.default <- function(x, .key = NULL, .rows = NULL,
 as.data.trame.list <- function(x, .key = NULL, .rows = NULL,
   .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
     "minimal"), ...) {
-  check_dots_empty0()
+  check_dots_empty()
   res <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
     rownames = .rownames)
-  rnames <- rownames(res)
+  rnames <- row.names(res)
   if (!missing(.key)) {
     res <- qDT(res)
     setkeyv(res, .key)
@@ -101,11 +103,11 @@ as.data.trame.list <- function(x, .key = NULL, .rows = NULL,
 as.data.trame.data.frame <- function(x, .key = NULL, .rows = NULL,
     .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
     "minimal"), ...) {
-  check_dots_empty0()
+  check_dots_empty()
   if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair))
     x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
       rownames = .rownames)
-  rnames <- rownames(x)
+  rnames <- row.names(x)
   if (!missing(.key)) {
     res <- qDT(x)
     setkeyv(res, .key)
@@ -123,13 +125,13 @@ as.data.trame.data.frame <- function(x, .key = NULL, .rows = NULL,
 as.data.trame.data.trame <- function(x, .key = NULL, .rows = NULL,
   .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
     "minimal"), ...) {
-  check_dots_empty0()
+  check_dots_empty()
   if (missing(.key))
     .key <- key(x)
   if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair)) {
     x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
       rownames = .rownames)
-    rnames <- rownames(x)
+    rnames <- row.names(x)
     if (!is.null(.key)) {
       x <- qDT(x)
       setkeyv(x, .key)
@@ -152,13 +154,13 @@ as.data.trame.data.trame <- function(x, .key = NULL, .rows = NULL,
 as.data.trame.data.table <- function(x, .key = NULL, .rows = NULL,
   .rownames = NA, .name_repair = c("check_unique", "unique", "universal",
     "minimal"), ...) {
-  check_dots_empty0()
+  check_dots_empty()
   if (missing(.key))
     .key <- key(x)
   if (!missing(.rows) || !missing(.rownames) || !missing(.name_repair))
     x <- as_tibble(x, .rows = .rows, .name_repair = .name_repair,
       rownames = .rownames)
-  rnames <- rownames(x)
+  rnames <- row.names(x)
   if (!is.null(.key)) {
     res <- qDT(x)
     setkeyv(res, .key)
@@ -175,14 +177,46 @@ as.data.trame.data.table <- function(x, .key = NULL, .rows = NULL,
 #' @param keep.rownames For compatibility with the generic, but not used here
 #' @export
 as.data.table.data.trame <- function(x, keep.rownames = FALSE, ...) {
-  check_dots_empty0()
+  check_dots_empty()
   qDT(x, row.names.col = keep.rownames, keep.attr = TRUE)
 }
 
-#as.tibble <- svMisc::aka(tibble::as_tibble) # Should be nice to have
-#as_tibble.data.trame == as_tibble.data.frame
-#as.data.frame.data.trame == as.data.frame.data.table
-#as.data.table.data.trame == as.data.table.data.table
+#' @rdname data.trame
+#' @export
+#' @param row.names A character vector of row names, or `NULL` (default).
+#' @param optional If `TRUE`, the row names are not checked for uniqueness.
+#'   If `FALSE`, the row names are corrected with [make.names()].
+as.data.frame.data.trame <- function(x, row.names = NULL, optional = TRUE, ...,
+    keep.attr = FALSE) {
+  check_dots_empty()
+  res <- qDF(x, row.names.col = NULL, keep.attr = keep.attr)
+  if (!isTRUE(optional))
+    names(res) <- make.names(names(res), unique = TRUE)
+  res
+}
+
+#' @rdname data.trame
+#' @param keep.rownames For compatibility with the generic, but not used here
+#' @param rownames `NULL` remove row names, `NA` (default) leaves them, or a
+#' single string to create a column with that name.
+#' @param keep.attr If `TRUE`, the attributes of the data frame are kept.
+#' @export
+as_tibble.data.trame <- function(x, ..., .rows = NULL, .name_repair =
+    c("check_unique", "unique", "universal", "minimal"), rownames = NULL,
+    keep.attr = FALSE) {
+  check_dots_empty()
+  # Translate rownames into row.names.col parlance (NULL, means FALSE)
+  if (is.null(rownames))
+    rownames <- FALSE
+  res <- qTBL(x, row.names.col = rownames, keep.attr = keep.attr)
+  if (is.na(rownames))
+    setattr(res, "row.names", row.names(x))
+  if (!missing(.rows) || !missing(.name_repair)) {
+    res <- as_tibble(res, .rows = .rows, .name_repair = .name_repair,
+      rownames = NA)
+  }
+  res
+}
 
 #' @rdname data.trame
 #' @param x An object.
