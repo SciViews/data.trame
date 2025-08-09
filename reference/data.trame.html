@@ -156,6 +156,19 @@
 <span><span class="co"># S3 method for class 'data.trame'</span></span>
 <span><span class="fu">as.data.table</span><span class="op">(</span><span class="va">x</span>, keep.rownames <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'data.trame'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">x</span>, row.names <span class="op">=</span> <span class="cn">NULL</span>, optional <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span>, keep.attr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'data.trame'</span></span>
+<span><span class="fu">as_tibble</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .rows <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .name_repair <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"check_unique"</span>, <span class="st">"unique"</span>, <span class="st">"universal"</span>, <span class="st">"minimal"</span><span class="op">)</span>,</span>
+<span>  rownames <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  keep.attr <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">is.data.trame</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -198,6 +211,24 @@ original object, if any. If <code>NA</code> (default), row names are left intact
 
 <dt id="arg-keep-rownames">keep.rownames<a class="anchor" aria-label="anchor" href="#arg-keep-rownames"></a></dt>
 <dd><p>For compatibility with the generic, but not used here</p></dd>
+
+
+<dt id="arg-row-names">row.names<a class="anchor" aria-label="anchor" href="#arg-row-names"></a></dt>
+<dd><p>A character vector of row names, or <code>NULL</code> (default).</p></dd>
+
+
+<dt id="arg-optional">optional<a class="anchor" aria-label="anchor" href="#arg-optional"></a></dt>
+<dd><p>If <code>TRUE</code>, the row names are not checked for uniqueness.
+If <code>FALSE</code>, the row names are corrected with <code><a href="https://rdrr.io/r/base/make.names.html" class="external-link">make.names()</a></code>.</p></dd>
+
+
+<dt id="arg-keep-attr">keep.attr<a class="anchor" aria-label="anchor" href="#arg-keep-attr"></a></dt>
+<dd><p>If <code>TRUE</code>, the attributes of the data frame are kept.</p></dd>
+
+
+<dt id="arg-rownames">rownames<a class="anchor" aria-label="anchor" href="#arg-rownames"></a></dt>
+<dd><p><code>NULL</code> remove row names, <code>NA</code> (default) leaves them, or a
+single string to create a column with that name.</p></dd>
 
 </dl></div>
     <div id="value">

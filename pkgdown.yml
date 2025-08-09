@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   data.trame: data.trame.html
-last_built: 2025-08-02T18:18Z
+last_built: 2025-08-09T12:09Z
 urls:
   reference: https://www.sciviews.org/data.trame/reference
   article: https://www.sciviews.org/data.trame/articles
